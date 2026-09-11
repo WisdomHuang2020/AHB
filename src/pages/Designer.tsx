@@ -64,8 +64,10 @@ function PointTable({ title, p }: { title: string; p: AhbOperatingPoint }) {
     ['谷值电流 Ivalley', `${p.iValley.toFixed(3)} A`],
     ['原边 RMS 电流', `${p.iPriRms.toFixed(3)} A`],
     ['副边 RMS 电流', `${p.iSecRms.toFixed(3)} A`],
-    ['隔直电容电压 Vcb', `${p.vCb.toFixed(1)} V`],
-    ['隔直电容纹波 ΔVcb', `${p.deltaVCb.toFixed(2)} V`],
+    ['谐振电容电压 Vcr', `${p.vCb.toFixed(1)} V`],
+    ['谐振电容纹波 ΔVcr', `${p.deltaVCb.toFixed(2)} V`],
+    ['S2关断 iLr / 谷值', `${p.iLrEnd.toFixed(3)} / ${p.iValley.toFixed(3)} A`],
+    ['S2关断 副边残流 is', `${p.isEnd.toFixed(3)} A${p.isEnd < 0.1 ? '（ZCS ✓）' : '（ZCS 漂移）'}`],
     ['ZVS 能量裕量', `${p.zvsMargin.toFixed(2)} ×`],
     ['所需死区（谐振近似）', `${(p.deadtimeNeed * 1e9).toFixed(0)} ns`],
     ['死区下限 Td1min（S1关断·文献式）', `${(p.td1min * 1e9).toFixed(0)} ns`],
@@ -104,7 +106,7 @@ export default function Designer() {
         <Calculator className="w-7 h-7 text-primary-light" /> 设计工具
       </h1>
       <p className="text-text-secondary mb-10">
-        输入规格与设计目标，自动完成匝比、励磁电感、隔直电容的选型，并在三个输入电压点验证 ZVS。
+        输入规格与设计目标，自动完成匝比、励磁电感的选型与隔直/谐振电容 Cr 的 ZCS 调谐，并在三个输入电压点验证 ZVS。
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -156,11 +158,11 @@ export default function Designer() {
                 <div className="text-2xl font-bold text-primary-light font-mono">{(result.lm * 1e6).toFixed(0)} µH</div>
               </div>
               <div>
-                <div className="text-text-muted text-xs mb-1">隔直电容 Cb</div>
+                <div className="text-text-muted text-xs mb-1">隔直/谐振电容 Cr（ZCS 调谐）</div>
                 <div className="text-2xl font-bold text-primary-light font-mono">{(result.cb * 1e9).toFixed(0)} nF</div>
               </div>
               <div>
-                <div className="text-text-muted text-xs mb-1">谐振频率 fr</div>
+                <div className="text-text-muted text-xs mb-1">谐振频率 fr（≈fs 调谐）</div>
                 <div className="text-2xl font-bold text-primary-light font-mono">{(result.fr / 1000).toFixed(1)} kHz</div>
               </div>
             </div>
@@ -181,7 +183,9 @@ export default function Designer() {
           <p className="text-text-muted text-xs leading-relaxed">
             计算依据说明：① 励磁平均电流计入效率 η（推导页式 9 为 η=1 的理想形式 I_o/n，二者在 η=1、V_d=0 时等价）；
             ② 原/副边 RMS 按梯形波近似（推导页 §7 积分式的工程近似，副边未计入谐振半正弦形状，结果偏保守，对绕组选型有利）；
-            ③「所需死区（谐振近似）」为 L_m-C_eq 谐振换流估计，「死区下限 Td1/Td2min」为文献（八）线性充电式，两者应同时满足。
+            ③「所需死区（谐振近似）」为 L_m-C_eq 谐振换流估计，「死区下限 Td1/Td2min」为文献（八）线性充电式，两者应同时满足；
+            ④ Cr 按文献（八）ZCS 调谐条件求解——令 S2 关断时刻 i_Lr 恰好回落到谷值电流 I_Lm-min（副边电流归零），
+            该条件仅在调谐点（默认取额定输入）精确成立，低/高压点的残流漂移为固有物理现象，可在特性曲线页「ZCS 调谐匹配表」中查看。
           </p>
 
           {/* 警告 */}

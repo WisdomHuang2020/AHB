@@ -3,12 +3,11 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
 import { useDesign } from '@/lib/DesignContext'
-import { dcGain, magnetizingWaveform, operatingPoint } from '@/lib/ahbMath'
-import { TrendingUp } from 'lucide-react'
+import { dcGain, resonantWaveform } from '@/lib/ahbMath'
+import { TrendingUp, Waves, CheckCircle2, AlertTriangle } from 'lucide-react'
 
 const axisStyle = { fill: '#a3a3a3', fontSize: 12 }
 const gridStroke = '#262626'
-const colors = ['#14b8a6', '#f59e0b', '#ef4444', '#60a5fa', '#a78bfa']
 
 const tooltipStyle = {
   backgroundColor: '#171717',
@@ -19,7 +18,7 @@ const tooltipStyle = {
 
 export default function Curves() {
   const { inputs, result } = useDesign()
-  const { n, lm, cb } = result
+  const { n, lm, lr, cb } = result
 
   // 1. 增益-占空比曲线：不同匝比
   const gainData = useMemo(() => {
@@ -35,25 +34,16 @@ export default function Curves() {
     return { pts, ratios }
   }, [n])
 
-  // 2. 励磁电流波形（一个开关周期，三个输入电压）
-  const waveData = useMemo(() => {
-    const vs = [
-      { vin: inputs.vinMin, label: 'min' },
-      { vin: inputs.vinNom, label: 'nom' },
-      { vin: inputs.vinMax, label: 'max' },
-    ]
-    const waves = vs.map((v) => ({ ...v, pts: magnetizingWaveform(inputs, n, lm, v.vin) }))
-    const len = waves[0].pts.length
-    const merged: Record<string, number>[] = []
-    for (let k = 0; k < len; k++) {
-      const row: Record<string, number> = { t: Number(waves[0].pts[k].t.toFixed(3)) }
-      waves.forEach((w, i) => {
-        row[`w${i}`] = Number(w.pts[k].i.toFixed(4))
-      })
-      merged.push(row)
-    }
-    return { merged, labels: vs.map((v) => `${v.vin} V`) }
-  }, [inputs, n, lm])
+  // 2. 精确谐振波形（标称输入点，式6/19/21）
+  const waveData = useMemo(
+    () => resonantWaveform(inputs, n, lm, lr, cb, inputs.vinNom).map((p) => ({
+      t: Number(p.t.toFixed(3)),
+      iLm: Number(p.iLm.toFixed(4)),
+      iLr: Number(p.iLr.toFixed(4)),
+      is: Number(p.is.toFixed(4)),
+    })),
+    [inputs, n, lm, lr, cb],
+  )
 
   // 3. ZVS 边界：谷值电流 vs 负载（三个输入电压）
   const zvsData = useMemo(() => {
@@ -67,22 +57,34 @@ export default function Curves() {
       const row: Record<string, number> = { load: p }
       vs.forEach((v) => {
         const inp = { ...inputs, pout: (inputs.pout * p) / 100 }
-        const pt = operatingPoint(inp, n, lm, cb, v.vin)
-        row[v.key] = Number(pt.iValley.toFixed(4))
+        const duty = (n * (inp.vout + inp.vd)) / v.vin
+        const iAvg = inp.pout / (inp.eta * v.vin * duty)
+        const deltaI = (v.vin * (1 - duty) * duty) / (lm * inp.fs)
+        row[v.key] = Number((iAvg - deltaI / 2).toFixed(4))
       })
       rows.push(row)
     }
     // 各输入电压下的 ZVS 临界谷值电流：I_crit = -Vin·√(C_eq/Lm)
     const crits = vs.map((v) => -v.vin * Math.sqrt(inputs.cEq / lm))
     return { rows, crits, labels: vs.map((v) => `${v.vin} V`) }
-  }, [inputs, n, lm, cb])
+  }, [inputs, n, lm])
+
+  const colors = ['#14b8a6', '#f59e0b', '#ef4444', '#60a5fa', '#a78bfa']
+
+  // ZCS 匹配表数据
+  const zcsRows = [
+    { label: `低压 ${inputs.vinMin} V`, p: result.points.min },
+    { label: `额定 ${inputs.vinNom} V`, p: result.points.nom },
+    { label: `高压 ${inputs.vinMax} V`, p: result.points.max },
+  ]
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-text-primary mb-2">特性曲线</h1>
       <p className="text-text-secondary mb-10">
-        基于当前设计参数（n = {n.toFixed(2)}，L<sub>m</sub> = {(lm * 1e6).toFixed(0)} µH）实时绘制的特性曲线。
-        在设计工具页修改参数后，本页曲线会同步更新。
+        基于当前设计参数（n = {n.toFixed(2)}，L<sub>m</sub> = {(lm * 1e6).toFixed(0)} µH，
+        C<sub>r</sub> = {(cb * 1e9).toFixed(1)} nF，f<sub>r2</sub> = {(result.fr / 1000).toFixed(0)} kHz）实时绘制，
+        与公式推导页式 6 / 19 / 21 完全对应。
       </p>
 
       {/* 增益曲线 */}
@@ -112,41 +114,81 @@ export default function Curves() {
             </LineChart>
           </ResponsiveContainer>
           <p className="text-text-muted text-sm mt-3">
-            增益随占空比线性增长，斜率为 1/n。输入电压变化时，控制器通过调节 D 保持输出稳定：
-            低压输入对应大占空比，高压输入对应小占空比。
+            增益随占空比线性增长，斜率为 1/n（推导页 §1）。输入电压变化时控制器调节 D 保持输出稳定。
           </p>
         </div>
       </section>
 
-      {/* 励磁电流波形 */}
+      {/* 精确谐振波形 */}
       <section className="mb-14">
-        <h2 className="text-xl font-semibold text-text-primary mb-4">励磁电流波形（一个开关周期）</h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <Waves className="w-5 h-5 text-primary-light" /> 精确谐振波形（额定输入 {inputs.vinNom} V，一个开关周期）
+        </h2>
         <div className="card-surface p-6">
-          <ResponsiveContainer width="100%" height={360}>
-            <LineChart data={waveData.merged} margin={{ top: 10, right: 24, bottom: 10, left: 10 }}>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={waveData} margin={{ top: 10, right: 24, bottom: 10, left: 10 }}>
               <CartesianGrid stroke={gridStroke} strokeDasharray="3 3" />
               <XAxis dataKey="t" tick={axisStyle} label={{ value: '时间 (µs)', position: 'insideBottomRight', offset: -4, fill: '#737373' }} />
-              <YAxis tick={axisStyle} label={{ value: 'i_Lm (A)', angle: -90, position: 'insideLeft', fill: '#737373' }} />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v.toFixed(3)} A`} />
+              <YAxis yAxisId="pri" tick={axisStyle} label={{ value: 'i_Lm / i_Lr (A)', angle: -90, position: 'insideLeft', fill: '#737373' }} />
+              <YAxis yAxisId="sec" orientation="right" tick={axisStyle} label={{ value: 'i_s (A)', angle: 90, position: 'insideRight', fill: '#737373' }} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number, name: string) => [`${v.toFixed(3)} A`, name]} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <ReferenceLine y={0} stroke="#525252" strokeDasharray="6 4" />
-              {waveData.labels.map((lb, i) => (
-                <Line
-                  key={i}
-                  type="linear"
-                  dataKey={`w${i}`}
-                  name={`Vin = ${lb}`}
-                  stroke={colors[i]}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              ))}
+              <ReferenceLine yAxisId="pri" y={0} stroke="#525252" strokeDasharray="6 4" />
+              <Line yAxisId="pri" type="monotone" dataKey="iLm" name="i_Lm 励磁电流（式6）" stroke="#ef4444" strokeWidth={2} dot={false} />
+              <Line yAxisId="pri" type="monotone" dataKey="iLr" name="i_Lr 谐振腔电流（式19）" stroke="#14b8a6" strokeWidth={2} dot={false} />
+              <Line yAxisId="sec" type="monotone" dataKey="is" name="i_s 副边电流（式21，右轴）" stroke="#f59e0b" strokeWidth={2.5} dot={false} />
             </LineChart>
           </ResponsiveContainer>
-          <p className="text-text-muted text-sm mt-3">
-            三角波双向摆动：谷值低于零的部分是 ZVS 换流的能量来源。输入电压越低占空比越大，平均电流越高。
-          </p>
+          <div className="text-text-muted text-sm mt-3 space-y-1.5">
+            <p>· 储能阶段（0 ~ D·T<sub>s</sub>）：三元件谐振近似线性，i<sub>Lr</sub> 与 i<sub>Lm</sub> 重合上升（式 6 第一支路）。</p>
+            <p>· 释能阶段（D·T<sub>s</sub> ~ T<sub>s</sub>）：i<sub>Lm</sub> 被副边反射电压钳位线性下降；i<sub>Lr</sub> 按 L<sub>r</sub>-C<sub>r</sub> 二元件谐振正弦下凹后回升（式 19）。</p>
+            <p>· 副边电流 i<sub>s</sub> = n·(i<sub>Lm</sub> − i<sub>Lr</sub>) 呈半正弦谐振脉冲（式 21）；C<sub>r</sub> 按文献八 ZCS 调谐，S2 关断时刻 i<sub>Lr</sub> 恰好回到 I<sub>Lm-min</sub>，i<sub>s</sub> 归零。</p>
+          </div>
         </div>
+      </section>
+
+      {/* ZCS 匹配表 */}
+      <section className="mb-14">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">ZCS 调谐匹配（C<sub>r</sub> 在额定点调谐）</h2>
+        <div className="card-surface overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="px-5 py-3 text-text-muted font-medium">工作点</th>
+                <th className="px-5 py-3 text-text-muted font-medium">占空比 D</th>
+                <th className="px-5 py-3 text-text-muted font-medium">I_Lm-min（谷值）</th>
+                <th className="px-5 py-3 text-text-muted font-medium">i_Lr(T_off) 关断时刻</th>
+                <th className="px-5 py-3 text-text-muted font-medium">副边残存电流 i_s(T_off)</th>
+                <th className="px-5 py-3 text-text-muted font-medium">ZCS 状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              {zcsRows.map((r) => {
+                const ok = r.p.isEnd < 0.1
+                return (
+                  <tr key={r.label} className="border-b border-border/50 last:border-0">
+                    <td className="px-5 py-3 text-text-primary font-medium">{r.label}</td>
+                    <td className="px-5 py-3 text-text-secondary font-mono">{(r.p.duty * 100).toFixed(1)} %</td>
+                    <td className="px-5 py-3 text-text-secondary font-mono">{r.p.iValley.toFixed(3)} A</td>
+                    <td className="px-5 py-3 text-text-secondary font-mono">{r.p.iLrEnd.toFixed(3)} A</td>
+                    <td className="px-5 py-3 text-text-secondary font-mono">{r.p.isEnd.toFixed(3)} A</td>
+                    <td className="px-5 py-3">
+                      {ok ? (
+                        <span className="inline-flex items-center gap-1 text-success text-xs"><CheckCircle2 className="w-3.5 h-3.5" /> ZCS 成立</span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-accent-light text-xs"><AlertTriangle className="w-3.5 h-3.5" /> 漂移</span>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-text-muted text-sm mt-3">
+          固定频率 PWM 下占空比随输入电压变化，释能谐振弧长随之改变，ZCS 只在调谐点（额定输入）严格成立；
+          低压/高压点的残存电流是 AHB 反激的固有特性，幅值越小换流损耗越低。
+        </p>
       </section>
 
       {/* ZVS 边界 */}
@@ -184,17 +226,11 @@ export default function Curves() {
             </LineChart>
           </ResponsiveContainer>
           <p className="text-text-muted text-sm mt-3">
-            实线低于同色虚线（临界值 <InlineMathFallback />）时 ZVS 成立。负载减轻后平均电流下降，
-            谷值电流变浅，ZVS 逐渐丢失——这是 AHB 反激轻载效率下降的主要原因，工程上通常配合降频或突发模式。
+            实线低于同色虚线（临界值 I_crit = −V_in·√(C_eq/L_m)，推导页 §6 能量判据）时 ZVS 成立。
+            负载减轻后谷值电流变浅，ZVS 逐渐丢失，工程上通常配合降频或突发模式。
           </p>
         </div>
       </section>
     </div>
-  )
-}
-
-function InlineMathFallback() {
-  return (
-    <span className="font-mono text-text-secondary">I_crit = −Vin·√(C_eq/Lm)</span>
   )
 }

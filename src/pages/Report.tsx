@@ -24,7 +24,8 @@ function PointSection({ title, p }: { title: string; p: AhbOperatingPoint }) {
           <Row k="峰值 / 谷值电流" v={`${p.iPk.toFixed(3)} / ${p.iValley.toFixed(3)} A`} />
           <Row k="原边 RMS / 副边 RMS" v={`${p.iPriRms.toFixed(3)} / ${p.iSecRms.toFixed(3)} A`} />
           <Row k="输出电容纹波电流" v={`${p.iCoRms.toFixed(3)} A`} />
-          <Row k="隔直电容电压 / 纹波" v={`${p.vCb.toFixed(1)} V / ${p.deltaVCb.toFixed(2)} V`} />
+          <Row k="谐振电容电压 / 纹波" v={`${p.vCb.toFixed(1)} V / ${p.deltaVCb.toFixed(2)} V`} />
+          <Row k="S2关断 iLr / 副边残流 is" v={`${p.iLrEnd.toFixed(3)} A / ${p.isEnd.toFixed(3)} A${p.isEnd < 0.1 ? '（ZCS ✓）' : ''}`} />
           <Row k="ZVS 能量裕量" v={`${p.zvsMargin.toFixed(2)} ×`} />
           <Row k="所需死区时间" v={`≥ ${(p.deadtimeNeed * 1e9).toFixed(0)} ns`} />
           <Row k="死区下限 Td1min / Td2min（文献式）" v={`${(p.td1min * 1e9).toFixed(0)} / ${p.td2min === Infinity ? '∞' : (p.td2min * 1e9).toFixed(0)} ns`} />
@@ -95,8 +96,8 @@ export default function Report() {
               <Row k="变压器匝比 n = Np/Ns" v={result.n.toFixed(2)} />
               <Row k="励磁电感 Lm" v={`${(result.lm * 1e6).toFixed(1)} µH`} />
               <Row k="漏感+串感 Lr（≈3% Lm）" v={`${(result.lr * 1e6).toFixed(2)} µH`} />
-              <Row k="隔直电容 Cb" v={`${(result.cb * 1e9).toFixed(1)} nF`} />
-              <Row k="Lr·Cb 谐振频率 fr" v={`${(result.fr / 1000).toFixed(1)} kHz（fs = ${(inputs.fs / 1000).toFixed(0)} kHz）`} />
+              <Row k="隔直/谐振电容 Cr（ZCS 调谐）" v={`${(result.cb * 1e9).toFixed(1)} nF`} />
+              <Row k="Lr·Cr 谐振频率 fr" v={`${(result.fr / 1000).toFixed(1)} kHz（fs = ${(inputs.fs / 1000).toFixed(0)} kHz，调谐比 fr/fs ≈ ${(result.fr / inputs.fs).toFixed(2)}）`} />
               <Row k="MOSFET 电压应力" v={`${result.vMos.toFixed(0)} V`} />
               <Row k="二极管电压应力" v={`${result.vDiode.toFixed(1)} V`} />
             </tbody>
@@ -117,8 +118,9 @@ export default function Report() {
         <section>
           <h3 className="text-lg font-semibold text-text-primary mb-2">4. 关键设计公式</h3>
           <MathBlock label="直流增益" latex={String.raw`V_o = \frac{D\,V_{in}}{n} - V_d`} />
-          <MathBlock label="隔直电容电压" latex={String.raw`V_{Cb} = D \cdot V_{in}`} />
+          <MathBlock label="谐振电容电压" latex={String.raw`V_{Cr} = D \cdot V_{in}`} />
           <MathBlock label="励磁电感设计" latex={String.raw`L_m = \frac{V_{in}(1-D)\,D}{K_r \cdot I_{Lm,avg} \cdot f_s}`} />
+          <MathBlock label="ZCS 调谐条件（文献八）" important latex={String.raw`i_{Lr}(T_{off}) = I_{Lm\text{-}min} \;\Rightarrow\; i_s(T_{off}) = n\,(I_{Lm\text{-}min} - i_{Lr}) = 0`} />
           <MathBlock label="ZVS 能量条件" important latex={String.raw`\frac{1}{2} L_m I_{valley}^2 \ge \frac{1}{2} C_{oss,eq} V_{in}^2`} />
           <MathBlock label="死区时间下限" latex={String.raw`t_{dead} \ge \frac{\pi}{2}\sqrt{L_m C_{oss,eq}}`} />
           <MathBlock label="最小死区（文献八，线性充电式）" latex={String.raw`T_{d1min} = \frac{2 C_{oss} V_{in}}{I_{Lm\text{-}max}}, \qquad T_{d2min} = \frac{2 C_{oss} V_{in}}{|I_{Lm\text{-}min}|}`} />
@@ -130,7 +132,7 @@ export default function Report() {
           {result.warnings.length === 0 ? (
             <p className="text-success text-sm flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
-              本设计在全部输入电压范围内满足 ZVS 能量与死区时间要求，谐振频率与开关频率比值合理。
+              本设计在全部输入电压范围内满足 ZVS 能量与死区时间要求；谐振电容 Cr 已按文献（八）ZCS 调谐条件求解，调谐点处 S2 关断时刻副边电流归零。
             </p>
           ) : (
             <ul className="space-y-2 text-sm text-text-secondary">

@@ -261,24 +261,43 @@ export default function Derivations() {
         </p>
       </section>
 
-      {/* 9. 隔直电容工程设计与器件应力 */}
+      {/* 9. 谐振电容 ZCS 调谐与器件应力 */}
       <section>
-        <h2 className="text-xl font-semibold text-text-primary mb-4">9. 隔直电容 C<sub>r</sub> 工程设计与器件应力</h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          9. 谐振电容 C<sub>r</sub> 的 ZCS 调谐与器件应力<SrcTag text={SRC8} />
+        </h2>
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          C<InlineMath latex="_r" /> 与 L<InlineMath latex="_r" /> 的谐振频率须远低于开关频率，
-          避免谐振与增益特性耦合；同时 C<InlineMath latex="_r" /> 吸收导通期电流电荷产生电压纹波，
-          工程上限制在 V<InlineMath latex="_{Cr}" /> 的 5% 以内：
+          C<InlineMath latex="_r" /> 既是隔直电容，又与 L<InlineMath latex="_r" /> 构成关断期的谐振腔。
+          其取值由 <b className="text-text-primary">ZCS 调谐条件</b>决定——令 S2 关断时刻谐振腔电流
+          i<InlineMath latex="_{Lr}" /> 恰好回落到励磁谷值电流，副边电流随之归零（i<InlineMath latex="_s" /> = 0），
+          副边整流管实现零电流关断。利用式 19 的谐振状态演化：
         </p>
         <MathBlock
-          label="谐振频率约束"
-          important
-          latex={String.raw`f_r = \frac{1}{2\pi\sqrt{L_r C_r}} \;\le\; \frac{f_s}{5}`}
+          label="关断期谐振状态（式 19 末值，θ = ωr·Toff）"
+          latex={String.raw`i_{Lr}(T_{off}) = I_{Lm\text{-}max}\cos\theta + \frac{V_{Cr1} - nV_o}{Z_2}\sin\theta, \qquad Z_2 = \sqrt{\frac{L_r}{C_r}},\;\; \omega_r = \frac{1}{\sqrt{L_r C_r}}`}
         />
         <MathBlock
-          label="电容电压纹波约束"
-          latex={String.raw`\Delta V_{Cr} = \frac{I_{Lm\text{-}avg} \cdot D}{C_r \cdot f_s} \;\le\; 5\% \cdot V_{Cr}`}
+          label="ZCS 调谐条件（数值求解 Cr）"
+          important
+          latex={String.raw`i_{Lr}(T_{off}) = I_{Lm\text{-}min} \;\Leftrightarrow\; i_s(T_{off}) = n\left(I_{Lm\text{-}min} - i_{Lr}(T_{off})\right) = 0`}
         />
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          该条件对 C<InlineMath latex="_r" /> 是隐式的（V<InlineMath latex="_{Cr1}" /> 依赖谐振轨迹，
+          而轨迹又依赖 C<InlineMath latex="_r" />），工具采用不动点迭代求解：猜测 V<InlineMath latex="_{Cr1}" /> →
+          在 θ∈(π, 2π) 内二分求根得 ω<InlineMath latex="_r" /> → C<InlineMath latex="_r" /> = 1/(ω<InlineMath latex="_r" />²L
+          <InlineMath latex="_r" />) → 由 C<InlineMath latex="_r" /> 电荷平衡更新 V<InlineMath latex="_{Cr1}" />，直至收敛。
+          默认算例收敛到 C<InlineMath latex="_r" /> ≈ 44 nF、f<InlineMath latex="_r" /> ≈ 243 kHz（f
+          <InlineMath latex="_r" />/f<InlineMath latex="_s" /> ≈ 1.2，即谐振周期略短于开关周期——
+          这正是 ZCS 调谐的物理含义，<b className="text-text-primary">而非</b>传统「f
+          <InlineMath latex="_r" /> ≪ f<InlineMath latex="_s" />」的解耦约束）。
+        </p>
+        <MathBlock
+          label="电容电压纹波（报告量，非设计约束）"
+          latex={String.raw`\Delta V_{Cr} = \frac{I_{Lm\text{-}avg} \cdot D}{C_r \cdot f_s} \quad(\text{工程上建议} \le 20\% \cdot V_{Cr})`}
+        />
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          调谐条件仅在调谐点（默认取额定输入）精确成立；输入电压偏离后，S2 关断时刻的副边残流漂移为固有物理现象，
+          低压输入时残流可达数安，可在特性曲线页「ZCS 调谐匹配表」中量化查看。
           器件电压应力由桥臂钳位与副边反射决定——这正是 AHB 相对传统反激的优势（无 RCD 尖峰）：
         </p>
         <MathBlock
