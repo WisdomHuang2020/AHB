@@ -1,0 +1,342 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0f766e;
+  --color-primary-light: #14b8a6;
+  --color-primary-dark: #134e4a;
+  --color-accent: #f59e0b;
+  --color-accent-light: #fbbf24;
+  --color-bg: #0a0a0a;
+  --color-surface: #171717;
+  --color-surface-elevated: #262626;
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #a3a3a3;
+  --color-text-muted: #737373;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --color-border: #404040;
+  --color-border-light: #525252;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background-color: var(--color-primary);
+    color: white;
+  }
+}
+
+@layer components {
+  .math-block {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    overflow: auto;
+    font-family: var(--font-mono);
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+  .math-block::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+  .math-block::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .math-block::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  .math-block:hover {
+    border-color: var(--color-primary-light);
+    background-color: var(--color-surface-elevated);
+    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.12);
+  }
+  .math-block.important {
+  }
+  .math-block.important:hover {
+  }
+  .math-block.has-label {
+    padding: 0.5rem 1.5rem 1.5rem;
+  }
+  .math-block-label {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+  .math-block-label .step-number {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary-light);
+    background: var(--color-primary-dark);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+  .math-block-label .label-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+  }
+  .derivation-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .derivation-step-marker {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--color-primary-dark);
+    color: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    margin-top: 0.25rem;
+  }
+  .derivation-step-content {
+    flex: 1;
+  }
+  .math-block .katex-display {
+    margin: 0.5rem 0;
+  }
+  .math-block .katex-display .katex {
+    font-size: 1.15em;
+  }
+  .katex-display .katex .base {
+    margin: 0.25em 0;
+  }
+  .math-block.important .katex-display .katex {
+    font-size: 1.25em;
+    font-weight: 500;
+  }
+  .card-surface {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-surface:hover {
+    border-color: var(--color-primary-light);
+    background-color: var(--color-surface-elevated);
+    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.08);
+  }
+  .input-field {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--color-primary-light);
+    box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.2);
+  }
+  .input-field::placeholder {
+    color: var(--color-text-muted);
+  }
+  .katex-display {
+    margin: 1rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .katex-display::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+  .katex-display::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .katex-display::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  .katex-display .katex {
+    font-size: 1.1em;
+  }
+  .math-block.multiline .katex-display {
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .math-block.multiline .katex-display::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+  .math-block.multiline .katex-display::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .math-block.multiline .katex-display::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  .math-block.multiline .katex-display .katex {
+    font-size: 1.05em;
+    line-height: 1.8;
+  }
+  .math-block.multiline .katex-display .katex .base {
+    margin: 0.15em 0;
+  }
+}
+
+@keyframes currentFlow {
+  0% { stroke-dashoffset: 28; }
+  100% { stroke-dashoffset: 0; }
+}
+.current-flow {
+  stroke-dasharray: 8 6;
+  animation: currentFlow 1s linear infinite;
+}
+@keyframes dashFlow {
+  0% { stroke-dashoffset: 28; }
+  100% { stroke-dashoffset: 0; }
+}
+.dash-flow {
+  stroke-dasharray: 8 6;
+  animation: dashFlow 1s linear infinite;
+}
+.dash-flow-slow {
+  stroke-dasharray: 10 8;
+  animation: dashFlow 1.4s linear infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.pulse-glow {
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+@keyframes dotTravel {
+  0% { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}
+/* ── SVG circuit animation helpers ── */
+.svg-glow {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+.current-path-teal {
+  stroke: #14b8a6;
+  stroke-dasharray: 8 6;
+  animation: currentFlow 1s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(20, 184, 166, 0.5));
+}
+.current-path-amber {
+  stroke: #f59e0b;
+  stroke-dasharray: 8 6;
+  animation: currentFlow 1s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.5));
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 3px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-border-light);
+  }
+}
+
+/* SVG text should use the app font stack */
+svg text {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Print styles: ensure reports print cleanly */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  /* Hide navigation header */
+  header, nav, .no-print, .print\:hidden {
+    display: none !important;
+  }
+  /* Ensure report content is full width and visible */
+  .max-w-7xl {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  /* Show report preview area */
+  .card-surface {
+    background-color: white !important;
+    border: 1px solid #ddd !important;
+    color: black !important;
+  }
+  /* Ensure table borders visible */
+  table, th, td {
+    border-color: #ccc !important;
+  }
+  /* Math blocks: remove dark background */
+  .math-block {
+    background-color: transparent !important;
+    border: none !important;
+  }
+  /* KaTeX text color */
+  .katex, .katex-display {
+    color: black !important;
+  }
+  /* Page break */
+  section {
+    page-break-inside: avoid;
+  }
+  /* Footer text */
+  .text-text-muted, .text-text-secondary {
+    color: #666 !important;
+  }
+  .text-text-primary {
+    color: black !important;
+  }
+  /* Remove gradient text for print */
+  .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+  }
+  /* Links */
+  a {
+    color: black !important;
+    text-decoration: none !important;
+  }
+}
