@@ -1,157 +1,152 @@
+import { ReactNode } from 'react'
 import MathBlock from '@/components/MathBlock'
 import InlineMath from '@/components/InlineMath'
-import { Activity } from 'lucide-react'
+import FigureCard from '@/components/FigureCard'
+import { Activity, Waves, Microscope } from 'lucide-react'
 
-/** 关键波形示意：Vsw、iLm、iSec、VQ1 驱动 */
-function WaveformSvg() {
-  const W = 760
-  const left = 60
-  const right = 730
-  const span = right - left
-  const d1 = left + span * 0.45 // 死区1结束 / Q1 导通
-  const d2 = left + span * 0.5  // Q1 关断
-  const d3 = left + span * 0.55 // Q2 导通
-  const d4 = right - span * 0.05 // Q2 关断
+const SRC1 = '《AHB不对称半桥反激电路设计（一）拓扑工作过程详细解读》'
+const SRC8 = '《AHB不对称半桥反激电路设计（八）死区时间，谐振腔电流、谐振电感》'
+const SRC6 = '《AHB不对称半桥反激电路设计（六）AHB电路调试与器件应力检测》'
 
-  const row = (y: number) => `M ${left} ${y} L ${right} ${y}`
-
-  return (
-    <svg viewBox={`0 0 ${W} 420`} className="w-full h-auto" role="img" aria-label="AHB关键波形">
-      {/* 时间轴虚线 */}
-      {[d1, d2, d3, d4].map((x, i) => (
-        <line key={i} x1={x} y1="30" x2={x} y2="390" stroke="#404040" strokeWidth="1" strokeDasharray="4 4" />
-      ))}
-
-      {/* Vgs Q1 */}
-      <text x="8" y="72" fill="#a3a3a3" fontSize="12">Vgs Q1</text>
-      <path d={row(80)} stroke="#262626" strokeWidth="1" fill="none" />
-      <path
-        d={`M ${left} 80 L ${d1} 80 L ${d1} 50 L ${d2} 50 L ${d2} 80 L ${right} 80`}
-        fill="none" stroke="#14b8a6" strokeWidth="2"
-      />
-
-      {/* Vgs Q2 */}
-      <text x="8" y="132" fill="#a3a3a3" fontSize="12">Vgs Q2</text>
-      <path d={row(140)} stroke="#262626" strokeWidth="1" fill="none" />
-      <path
-        d={`M ${left} 140 L ${d3} 140 L ${d3} 110 L ${d4} 110 L ${d4} 140 L ${right} 140`}
-        fill="none" stroke="#f59e0b" strokeWidth="2"
-      />
-
-      {/* Vsw */}
-      <text x="8" y="192" fill="#a3a3a3" fontSize="12">Vsw</text>
-      <path d={row(200)} stroke="#262626" strokeWidth="1" fill="none" />
-      <path
-        d={`M ${left} 170 L ${d2} 170 Q ${(d2 + d3) / 2} 210 ${d3} 200 L ${d4} 200 Q ${(d4 + right - 8) / 2} 165 ${right - 8} 170 L ${right} 170`}
-        fill="none" stroke="#14b8a6" strokeWidth="2"
-      />
-      <text x={d2 + 8} y="222" fill="#737373" fontSize="10">谐振换流（死区）</text>
-
-      {/* iLm */}
-      <text x="8" y="262" fill="#a3a3a3" fontSize="12">i<tspan dy="3" fontSize="9">Lm</tspan></text>
-      <path d={row(265)} stroke="#262626" strokeWidth="1" fill="none" />
-      <path
-        d={`M ${left} 250 L ${d2} 220 L ${d4} 300 L ${right} 250`}
-        fill="none" stroke="#14b8a6" strokeWidth="2"
-      />
-      <line x1={left} y1="265" x2={right} y2="265" stroke="#404040" strokeWidth="1" strokeDasharray="6 4" />
-      <text x={d2 + 6} y="214" fill="#14b8a6" fontSize="11">I<tspan dy="3" fontSize="8">pk</tspan></text>
-      <text x={d4 - 66} y="318" fill="#f59e0b" fontSize="11">I<tspan dy="3" fontSize="8">valley</tspan>（&lt;0，ZVS 能量来源）</text>
-
-      {/* iD 副边 */}
-      <text x="8" y="362" fill="#a3a3a3" fontSize="12">i<tspan dy="3" fontSize="9">D</tspan></text>
-      <path d={row(375)} stroke="#262626" strokeWidth="1" fill="none" />
-      <path
-        d={`M ${left} 375 L ${d3} 375 L ${d3} 330 L ${d4} 372 L ${right} 375`}
-        fill="none" stroke="#f59e0b" strokeWidth="2"
-      />
-      <text x={(d3 + d4) / 2 - 30} y="322" fill="#a3a3a3" fontSize="10">副边二极管电流</text>
-
-      {/* 模态标注 */}
-      <text x={(left + d1) / 2 - 20} y="20" fill="#737373" fontSize="11">死区</text>
-      <text x={(d1 + d2) / 2 - 30} y="20" fill="#14b8a6" fontSize="11">模态① Q1导通</text>
-      <text x={(d2 + d3) / 2 - 20} y="20" fill="#737373" fontSize="11">死区</text>
-      <text x={(d3 + d4) / 2 - 30} y="20" fill="#f59e0b" fontSize="11">模态② Q2导通</text>
-    </svg>
-  )
+interface Stage {
+  id: string
+  time: string
+  title: string
+  fig: string
+  caption: string
+  body: ReactNode
+  math?: string
 }
 
-const modes = [
+const stages: Stage[] = [
   {
-    id: '①',
-    title: 'Q1 导通（储能阶段，D·T）',
-    color: 'text-primary-light',
+    id: '1',
+    time: 't₀ ~ t₁',
+    title: 'S1 导通：原边储能，副边不导电',
+    fig: './fig/ahb-fig03.jpg',
+    caption: '(a) 阶段 1（t₀~t₁）：S1 导通、原边储能、副边不导电',
     body: (
       <>
         <p>
-          高边管 Q1 导通，开关节点 SW = V<InlineMath latex="_{in}" />。隔直电容电压
-          <InlineMath latex="V_{Cb} = D V_{in}" /> 与输入叠加后，励磁电感承受正向电压
-          <InlineMath latex="V_{in}(1-D)" />，励磁电流从谷值线性上升。
+          高边管 S1 导通，V<InlineMath latex="_{mid}" /> = V<InlineMath latex="_{in}" />。
+          电流路径：V<InlineMath latex="_{in}" /> → S1 → L<InlineMath latex="_r" /> →
+          原边绕组 → C<InlineMath latex="_r" />。励磁电感承受正向电压
+          <InlineMath latex="V_{Lm} = V_{in} - V_{Cr}" />，励磁电流 I<InlineMath latex="_{Lm}" />
+          与谐振电流 I<InlineMath latex="_{Lr}" /> 相等并线性上升，能量储存在变压器磁场中。
         </p>
         <p>
-          此阶段副边二极管承受反压 <InlineMath latex="V_o + V_{in}/n" /> 而截止，
-          输出负载由输出电容 <InlineMath latex="C_o" /> 供电。能量以磁场形式储存在变压器中。
+          副边二极管 D1 反向截止，负载电流 I<InlineMath latex="_O" /> 完全由输出电容
+          C<InlineMath latex="_o" /> 提供。
         </p>
       </>
     ),
-    math: String.raw`\frac{di_{Lm}}{dt} = \frac{V_{in}(1-D)}{L_m}`,
+    math: String.raw`\frac{dI_{Lm}}{dt} = \frac{V_{in} - V_{Cr}}{L_m + L_r}, \qquad I_{Lr} = I_{Lm}`,
   },
   {
-    id: '②',
-    title: '死区 1（Q1 关断 → Q2 开通，谐振换流）',
-    color: 'text-text-secondary',
+    id: '2',
+    time: 't₁ ~ t₂',
+    title: 'S1 关断：结电容充放电，Vmid 谐振下降',
+    fig: './fig/ahb-fig04.jpg',
+    caption: '(b) 阶段 2（t₁~t₂）：S1 关断、结电容充放电、Vmid 下降',
     body: (
       <>
         <p>
-          Q1 关断后，正向励磁峰值电流给开关节点等效电容 <InlineMath latex="C_{oss,eq}" />
-          放电（Q2 的 Coss 放电、Q1 的 Coss 充电），Vsw 从 V<InlineMath latex="_{in}" /> 谐振下降到 0。
+          S1 关断，正向谐振电流 I<InlineMath latex="_{Lr}" /> 无处可走，转而给结电容换流：
+          对 C<InlineMath latex="_{DS1}" /> 充电、对 C<InlineMath latex="_{DS2}" /> 放电，
+          V<InlineMath latex="_{mid}" /> 从 V<InlineMath latex="_{in}" /> 谐振下降。
         </p>
         <p>
-          当 Vsw 过零后 Q2 的体二极管导通，此时给 Q2 门极信号即为零电压开通。
-          死区时间必须大于谐振换流所需时间。
+          此阶段励磁电感电压 V<InlineMath latex="_{Lm}" /> 极性反转（上负下正），
+          副边仍未导通。换流速度由 I<InlineMath latex="_{Lr}" /> 峰值与结电容总量决定。
         </p>
       </>
     ),
-    math: String.raw`t_{dead} \;\ge\; \frac{\pi}{2}\sqrt{L_m C_{oss,eq}}`,
+    math: String.raw`I_{Lr}(t_1) = C_{DS,eq} \frac{dV_{mid}}{dt} \quad\Rightarrow\quad V_{mid}: V_{in} \to 0`,
   },
   {
-    id: '③',
-    title: 'Q2 导通（释能阶段，(1−D)·T）',
-    color: 'text-accent-light',
+    id: '3',
+    time: 't₂ ~ t₃',
+    title: 'S2 体二极管导通：副边电压升至 Vo',
+    fig: './fig/ahb-fig05.jpg',
+    caption: '(c) 阶段 3（t₂~t₃）：S2 体二极管导通、二次电压升至 Vo',
     body: (
       <>
         <p>
-          低边管 Q2 导通，SW = 0，励磁电感承受反向电压 <InlineMath latex="-D V_{in}" />
-          （等于副边反射电压 <InlineMath latex="-n(V_o+V_d)" />），励磁电流线性下降。
+          V<InlineMath latex="_{mid}" /> 降到 0 后，S2 的体二极管自然导通，把谐振回路钳位到地。
+          原边绕组电压被副边反射钳位到 −n(V<InlineMath latex="_o" />+V<InlineMath latex="_d" />），
+          副边二极管 D1 正偏，I<InlineMath latex="_d" /> 开始上升。
         </p>
         <p>
-          副边二极管正偏导通，变压器储存的能量释放到输出。励磁电流过零后继续下降，
-          在关断时刻形成负向谷值电流 <InlineMath latex="I_{valley}" />。
+          此刻给 S2 门极信号即为<b className="text-text-primary">零电压开通（ZVS）</b>——
+          这是 AHB 反激低边管软开关的完成点。
         </p>
       </>
     ),
-    math: String.raw`\frac{di_{Lm}}{dt} = -\frac{n(V_o + V_d)}{L_m} = -\frac{D\,V_{in}}{L_m}`,
   },
   {
-    id: '④',
-    title: '死区 2（Q2 关断 → Q1 开通，谐振换流）',
-    color: 'text-text-secondary',
+    id: '4',
+    time: 't₃ ~ t₄',
+    title: '能量传递：Cr–Lr 谐振，副边 Id 导通',
+    fig: './fig/ahb-fig06.jpg',
+    caption: '(d) 阶段 4（t₃~t₄）：能量传递、Cr–Lr 谐振、副边 Id 导通',
     body: (
       <>
         <p>
-          Q2 关断后，负向谷值电流 <InlineMath latex="I_{valley}" /> 成为换流动力：
-          它把开关节点电容的电荷抽走，Vsw 从 0 谐振上升到 V<InlineMath latex="_{in}" />，
-          Q1 体二极管导通后 Q1 零电压开通。
+          S2 导通，变压器储能向副边释放。此阶段 L<InlineMath latex="_r" /> 与
+          C<InlineMath latex="_r" /> 构成谐振回路，谐振电流 I<InlineMath latex="_{Lr}" />
+          按正弦规律变化，与励磁电流 I<InlineMath latex="_{Lm}" /> 的差值折算到副边即为
+          二极管电流：
         </p>
         <p>
-          这是 AHB 反激最关键的瞬间：只有 <InlineMath latex="I_{valley}" />
-          储能足够（½·L<InlineMath latex="_m" />·I<InlineMath latex="_{valley}" />²
-          ≥ ½·C<InlineMath latex="_{oss,eq}" />·V<InlineMath latex="_{in}" />²），
-          高压侧的 ZVS 才能完成。
+          副边电流因此呈谐振脉冲形状（半正弦），而非传统反激的线性下降三角波——
+          这是 AHB 反激实现副边 ZCS 的关键。
         </p>
       </>
     ),
-    math: String.raw`\frac{1}{2} L_m I_{valley}^2 \;\ge\; \frac{1}{2} C_{oss,eq} V_{in}^2`,
+    math: String.raw`I_d = n \cdot \big( I_{Lr} - I_{Lm} \big), \qquad f_r = \frac{1}{2\pi\sqrt{L_r C_r}}`,
+  },
+  {
+    id: '5',
+    time: 't₄ ~ t₅',
+    title: 'S2 ZVS 导通持续：Id 谐振回零，实现 ZCS',
+    fig: './fig/ahb-fig07.jpg',
+    caption: '(e) 阶段 5（t₄~t₅）：S2 ZVS 导通、Id 降至零实现 ZCS',
+    body: (
+      <>
+        <p>
+          谐振继续，I<InlineMath latex="_{Lr}" /> 下降到与 I<InlineMath latex="_{Lm}" />
+          相等，副边电流 I<InlineMath latex="_d" /> 自然归零——二极管
+          <b className="text-text-primary">零电流关断（ZCS）</b>，彻底消除反向恢复损耗与尖峰。
+        </p>
+        <p>
+          I<InlineMath latex="_d" /> = 0 后，I<InlineMath latex="_{Lr}" /> 与
+          I<InlineMath latex="_{Lm}" /> 重新汇合，回路回到仅含励磁分量的状态，等待 S2 关断。
+        </p>
+      </>
+    ),
+    math: String.raw`I_{Lr} = I_{Lm} \;\Rightarrow\; I_d = 0 \quad (\text{二极管 ZCS})`,
+  },
+  {
+    id: '6',
+    time: 't₅ ~ t₇',
+    title: 'S2 关断：Vmid 抬升至 Vin，S1 体二极管导通',
+    fig: './fig/ahb-fig08.jpg',
+    caption: '(f) 阶段 6（t₅~t₇）：S2 关断、Vmid 抬升至 Vin、S1 体二极管导通',
+    body: (
+      <>
+        <p>
+          S2 关断，谐振腔电流（此时已转为负向）给结电容反向换流：C<InlineMath latex="_{DS2}" />
+          充电、C<InlineMath latex="_{DS1}" /> 放电，V<InlineMath latex="_{mid}" /> 从 0
+          谐振抬升至 V<InlineMath latex="_{in}" />。
+        </p>
+        <p>
+          V<InlineMath latex="_{mid}" /> 到达 V<InlineMath latex="_{in}" /> 后 S1 体二极管导通，
+          S1 在下一个周期起点零电压开通，完成整个开关周期。负向谐振电流的储能是否充足，
+          决定了高边管 ZVS 的成败。
+        </p>
+      </>
+    ),
+    math: String.raw`\frac{1}{2} L_{eq} I_{Lr,valley}^2 \;\ge\; \frac{1}{2} C_{DS,eq} V_{in}^2`,
   },
 ]
 
@@ -159,36 +154,126 @@ export default function Operation() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-text-primary mb-2">工作原理</h1>
-      <p className="text-text-secondary mb-10">一个开关周期内 AHB 反激的四个工作模态与关键波形。</p>
+      <p className="text-text-secondary mb-10">
+        一个完整开关周期（t₀–t₇）内 AHB 反激的六个工作阶段。电路图与波形均取自项目知识库文献原文。
+      </p>
 
+      {/* 关键波形 */}
       <section className="mb-12">
         <h2 className="text-xl font-semibold text-text-primary mb-4 flex items-center gap-2">
-          <Activity className="w-5 h-5 text-primary-light" /> 关键波形
+          <Activity className="w-5 h-5 text-primary-light" /> 关键波形（t₀–t₇）
         </h2>
         <div className="card-surface p-6">
-          <WaveformSvg />
-          <p className="text-text-muted text-sm mt-4">
-            上排：Q1/Q2 互补驱动信号（含死区）；中排：开关节点电压 Vsw 在死区内谐振换流；
-            下排：励磁电流 i<sub>Lm</sub> 双向摆动，负向谷值为 ZVS 提供能量；副边二极管仅在 Q2 导通期间流过电流。
-          </p>
+          <FigureCard
+            src="./fig/ahb-fig02.jpg"
+            alt="AHB拓扑关键波形"
+            caption="AHB 拓扑关键波形：Vgs1/Vgs2（驱动）、Vds1/Vds2（开关管电压）、ILm（励磁电流）、ILr（谐振腔电流）、Id（副边二极管电流）"
+            source={`${SRC1}，p3`}
+            maxWidth="max-w-2xl mx-auto"
+          />
+          <div className="text-text-muted text-sm mt-4 space-y-2">
+            <p>
+              · <b className="text-text-secondary">I<sub>Lm</sub></b>：三角波双向摆动，t₀ 时刻略为负值（负向谷值是高边 ZVS 的能量来源）。
+            </p>
+            <p>
+              · <b className="text-text-secondary">I<sub>Lr</sub></b>：储能阶段与 I<sub>Lm</sub> 重合线性上升；释能阶段因 C<sub>r</sub>–L<sub>r</sub> 谐振呈正弦下凹，与 I<sub>Lm</sub> 的差值折算为副边电流。
+            </p>
+            <p>
+              · <b className="text-text-secondary">I<sub>d</sub></b>：半正弦谐振脉冲，t₅ 时刻自然归零 → 副边二极管零电流关断（ZCS）。
+            </p>
+          </div>
         </div>
       </section>
 
-      <section>
-        <h2 className="text-xl font-semibold text-text-primary mb-6">开关模态分析</h2>
-        <div className="space-y-6">
-          {modes.map((m) => (
-            <div key={m.id} className="derivation-step">
-              <div className="derivation-step-marker">{m.id}</div>
+      {/* 六个阶段 */}
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold text-text-primary mb-6">六个工作阶段详解</h2>
+        <div className="space-y-8">
+          {stages.map((s) => (
+            <div key={s.id} className="derivation-step">
+              <div className="derivation-step-marker">{s.id}</div>
               <div className="derivation-step-content">
-                <h3 className={`font-semibold mb-3 ${m.color}`}>{m.title}</h3>
-                <div className="space-y-3 text-text-secondary text-sm leading-relaxed">
-                  {m.body}
+                <h3 className="font-semibold text-text-primary mb-1">
+                  阶段 {s.id}（{s.time}）：{s.title}
+                </h3>
+                <div className="card-surface p-5 mt-3">
+                  <FigureCard src={s.fig} alt={s.caption} caption={s.caption} source={SRC1} />
+                  <div className="space-y-3 text-text-secondary text-sm leading-relaxed mt-4">
+                    {s.body}
+                  </div>
+                  {s.math && <MathBlock latex={s.math} />}
                 </div>
-                <MathBlock latex={m.math} />
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* 寄生谐振 */}
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <Waves className="w-5 h-5 text-primary-light" /> 死区内的寄生谐振
+        </h2>
+        <div className="card-surface p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FigureCard
+              src="./fig/ahb-fig10.png"
+              alt="S1关断等效电路"
+              caption="S1 关断后寄生参数谐振过程等效电路"
+              source={`${SRC8}，p2`}
+            />
+            <FigureCard
+              src="./fig/ahb-fig11.png"
+              alt="S2关断等效电路"
+              caption="S2 关断后寄生参数谐振过程等效电路"
+              source={`${SRC8}，p3`}
+            />
+          </div>
+          <FigureCard
+            src="./fig/ahb-fig09.png"
+            alt="寄生谐振电流波形"
+            caption="受寄生参数影响的谐振电流波形：iLr（红）与副边电流 is（蓝），含 ΔILr 跌落与 A 点凹陷"
+            source={`${SRC8}，p1`}
+            maxWidth="max-w-xl mx-auto"
+          />
+          <div className="space-y-3 text-text-secondary text-sm leading-relaxed mt-2">
+            <p>
+              计入开关管结电容与绕组寄生参数后，死区内的换流是
+              <InlineMath latex="L_r" />/<InlineMath latex="L_m" /> 与
+              <InlineMath latex="C_{DS,eq}" /> 的谐振过程：i<InlineMath latex="_{Lr}" />
+              在换流瞬间出现 ΔI<InlineMath latex="_{Lr}" /> 的快速跌落，
+              副边电流在 A 点处出现凹陷、周期末出现振铃。
+            </p>
+            <p>
+              死区时间的工程整定依据正是这段谐振：过短则 V<InlineMath latex="_{mid}" />
+              未摆到位就开通（失去 ZVS），过长则体二极管导通时间增加、损耗上升。
+            </p>
+          </div>
+          <MathBlock
+            label="死区时间整定"
+            latex={String.raw`t_{dead} \;\ge\; \frac{\pi}{2}\sqrt{L_{eq} \cdot C_{DS,eq}}`}
+          />
+        </div>
+      </section>
+
+      {/* 实测波形 */}
+      <section>
+        <h2 className="text-xl font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <Microscope className="w-5 h-5 text-primary-light" /> 实测验证
+        </h2>
+        <div className="card-surface p-6">
+          <FigureCard
+            src="./fig/ahb-fig12.png"
+            alt="实测副边Vds与Id"
+            caption="实测波形：副边 Vds（黄）与副边电流 Id（蓝）；A 点 = 谐振峰值，B 点 = ZCS 判断点"
+            source={`${SRC6}，p1`}
+          />
+          <p className="text-text-secondary text-sm leading-relaxed mt-2">
+            样机实测中，副边电流 Id 呈半正弦谐振脉冲并在关断前回到零（B 点），验证 ZCS 成立；
+            副边 Vds 在换流边沿出现寄生振铃（A 点），其幅度用于校核二极管电压应力裕量——
+            设计工具页给出的二极管应力 V<InlineMath latex="_{diode}" /> = V<InlineMath latex="_{in,max}" />/n + V<InlineMath latex="_o" />
+            需在此基础上再留振铃余量选型。
+          </p>
         </div>
       </section>
     </div>
