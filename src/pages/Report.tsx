@@ -27,6 +27,7 @@ function PointSection({ title, p }: { title: string; p: AhbOperatingPoint }) {
           <Row k="隔直电容电压 / 纹波" v={`${p.vCb.toFixed(1)} V / ${p.deltaVCb.toFixed(2)} V`} />
           <Row k="ZVS 能量裕量" v={`${p.zvsMargin.toFixed(2)} ×`} />
           <Row k="所需死区时间" v={`≥ ${(p.deadtimeNeed * 1e9).toFixed(0)} ns`} />
+          <Row k="死区下限 Td1min / Td2min（文献式）" v={`${(p.td1min * 1e9).toFixed(0)} / ${p.td2min === Infinity ? '∞' : (p.td2min * 1e9).toFixed(0)} ns`} />
           <Row k="ZVS 结论" v={p.zvsEnergyOk && p.deadtimeOk ? '满足' : '不满足'} />
         </tbody>
       </table>
@@ -120,6 +121,7 @@ export default function Report() {
           <MathBlock label="励磁电感设计" latex={String.raw`L_m = \frac{V_{in}(1-D)\,D}{K_r \cdot I_{Lm,avg} \cdot f_s}`} />
           <MathBlock label="ZVS 能量条件" important latex={String.raw`\frac{1}{2} L_m I_{valley}^2 \ge \frac{1}{2} C_{oss,eq} V_{in}^2`} />
           <MathBlock label="死区时间下限" latex={String.raw`t_{dead} \ge \frac{\pi}{2}\sqrt{L_m C_{oss,eq}}`} />
+          <MathBlock label="最小死区（文献八，线性充电式）" latex={String.raw`T_{d1min} = \frac{2 C_{oss} V_{in}}{I_{Lm\text{-}max}}, \qquad T_{d2min} = \frac{2 C_{oss} V_{in}}{|I_{Lm\text{-}min}|}`} />
         </section>
 
         {/* 结论 */}

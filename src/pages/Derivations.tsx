@@ -1,163 +1,264 @@
 import MathBlock from '@/components/MathBlock'
 import InlineMath from '@/components/InlineMath'
 
+const SRC7 = '《AHB不对称半桥反激电路设计（七）推导原副边峰值电流、有效值电流函数表达式》'
+const SRC8 = '《AHB不对称半桥反激电路设计（八）死区时间、谐振腔电流、谐振电感函数表达式》'
+
+function SrcTag({ text }: { text: string }) {
+  return <span className="text-xs text-text-muted font-normal ml-2">— 依据{text}</span>
+}
+
 export default function Derivations() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-text-primary mb-2">公式推导</h1>
-      <p className="text-text-secondary mb-10">AHB 反激从伏秒平衡到 ZVS 条件的完整推导链。</p>
+      <p className="text-text-secondary mb-10">
+        基于项目知识库文献的精确推导链：直流工作点 → 励磁电流分段表达式 → 谐振腔电流精确解 →
+        死区寄生谐振 → 电流有效值。符号与文献统一：S1/S2、V<sub>mid</sub>、L<sub>r</sub>、C<sub>r</sub>、L<sub>m</sub>。
+      </p>
 
-      {/* 1. 伏秒平衡与隔直电容电压 */}
+      {/* 1. 伏秒平衡 */}
       <section className="mb-14">
-        <h2 className="text-xl font-semibold text-text-primary mb-4">1. 伏秒平衡：隔直电容电压 V<tspan>C</tspan><sub>Cb</sub></h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">1. 伏秒平衡：隔直电容电压 V<sub>Cr</sub></h2>
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          稳态下励磁电感 <InlineMath latex="L_m" /> 在一个周期内伏秒积为零。
-          导通期（Q1 on，时长 <InlineMath latex="D T_s" />）电感电压为
-          <InlineMath latex="V_{in} - V_{Cb}" />；关断期（Q2 on，时长
-          <InlineMath latex="(1-D) T_s" />）电感电压为 <InlineMath latex="-V_{Cb}" />。
+          稳态下励磁电感一个周期内伏秒积为零。S1 导通期（时长 <InlineMath latex="D T_s" />）电感电压为
+          <InlineMath latex="V_{in} - V_{Cr}" />；S2 导通期（时长 <InlineMath latex="(1-D) T_s" />）为
+          <InlineMath latex="-V_{Cr}" />。
         </p>
         <MathBlock
           stepNumber={1}
-          label="列伏秒平衡方程"
-          latex={String.raw`(V_{in} - V_{Cb}) \cdot D T_s \;=\; V_{Cb} \cdot (1-D) T_s`}
+          label="伏秒平衡方程"
+          latex={String.raw`(V_{in} - V_{Cr}) \cdot D T_s = V_{Cr} \cdot (1-D) T_s`}
         />
         <MathBlock
           stepNumber={2}
-          label="解出隔直电容电压"
+          label="隔直（谐振）电容电压"
           important
-          latex={String.raw`V_{Cb} = D \cdot V_{in}`}
-        />
-        <p className="text-text-secondary text-sm leading-relaxed">
-          于是导通期励磁电感电压 <InlineMath latex="V_{Lm}^{+} = V_{in}(1-D)" />，
-          关断期 <InlineMath latex="V_{Lm}^{-} = -D\,V_{in}" />，二者大小互补、方向相反，形成对称励磁。
-        </p>
-      </section>
-
-      {/* 2. 直流增益 */}
-      <section className="mb-14">
-        <h2 className="text-xl font-semibold text-text-primary mb-4">2. 直流增益 M = D/n</h2>
-        <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          关断期副边二极管导通，原边绕组被输出反射电压钳位：
-          <InlineMath latex="V_{Lm}^{-} = -n(V_o + V_d)" />。
-          与 <InlineMath latex="V_{Lm}^{-} = -D V_{in}" /> 联立：
-        </p>
-        <MathBlock
-          stepNumber={1}
-          label="反射电压钳位"
-          latex={String.raw`n\,(V_o + V_d) = D \cdot V_{in}`}
-        />
-        <MathBlock
-          stepNumber={2}
-          label="AHB 反激直流增益"
-          important
-          latex={String.raw`\frac{V_o}{V_{in}} = \frac{D}{n} - \frac{V_d}{V_{in}} \;\approx\; \frac{D}{n}`}
+          latex={String.raw`V_{Cr} = D \cdot V_{in}`}
         />
         <MathBlock
           stepNumber={3}
-          label="由此确定占空比与匝比"
-          latex={String.raw`D = \frac{n\,(V_o + V_d)}{V_{in}}, \qquad n = \frac{D_{nom}\,V_{in,nom}}{V_o + V_d}`}
+          label="直流增益（副边反射钳位 n(Vo+Vd) = D·Vin）"
+          important
+          latex={String.raw`\frac{V_o}{V_{in}} \approx \frac{D}{n}, \qquad D = \frac{n\,(V_o + V_d)}{V_{in}}`}
         />
       </section>
 
-      {/* 3. 励磁电流纹波 */}
+      {/* 2. 励磁电流精确分段表达式 */}
       <section className="mb-14">
-        <h2 className="text-xl font-semibold text-text-primary mb-4">3. 励磁电流：平均值与纹波</h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          2. 励磁电流分段表达式<SrcTag text={SRC7} />
+        </h2>
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          输入功率经导通期注入：平均励磁电流
-          <InlineMath latex="I_{Lm,avg} = P_{out} / (\eta\, V_{in} D)" />。
-          峰-峰纹波由导通期电压与时间决定：
+          主管 S1 开通期间原边为<b className="text-text-primary">三元件谐振</b>（V<InlineMath latex="_{in}" />、
+          L<InlineMath latex="_r" />、L<InlineMath latex="_m" />、C<InlineMath latex="_r" />），
+          因 L<InlineMath latex="_m" /> ≫ L<InlineMath latex="_r" />，电流近似线性上升；
+          S2 开通期间励磁电感被副边反射电压钳位，电流线性下降：
         </p>
         <MathBlock
-          stepNumber={1}
-          label="峰-峰纹波"
+          label="一个开关周期内的励磁电流（文献式 6）"
           important
-          latex={String.raw`\Delta I_{Lm} = \frac{V_{in}(1-D)\,D}{L_m \cdot f_s}`}
+          multiline
+          latex={String.raw`i_{Lm}(t) = \begin{cases} I_{Lm\text{-}min} + \dfrac{V_{in}-V_{Cr}}{L_m+L_r}\, t & 0 < t \le D T_s \\[8pt] I_{Lm\text{-}max} + \dfrac{n V_o D T_s}{L_m} - \dfrac{n V_o}{L_m}\, t & D T_s < t \le T_s \end{cases}`}
         />
         <MathBlock
-          stepNumber={2}
-          label="峰值与谷值"
-          latex={String.raw`I_{pk} = I_{Lm,avg} + \frac{\Delta I_{Lm}}{2}, \qquad I_{valley} = I_{Lm,avg} - \frac{\Delta I_{Lm}}{2}`}
+          label="正负峰值（文献式 7、8）"
+          multiline
+          latex={String.raw`I_{Lm\text{-}max} = I_{Lm\text{-}avg} + \frac{n V_o (1-D) T_s}{2 L_m}, \qquad I_{Lm\text{-}min} = I_{Lm\text{-}avg} - \frac{n V_o (1-D) T_s}{2 L_m}`}
+        />
+        <MathBlock
+          label="变压器功率平衡（文献式 9）"
+          latex={String.raw`I_{Lm\text{-}avg} = \frac{I_{Lm\text{-}max} + I_{Lm\text{-}min}}{2} = \frac{I_o}{n}`}
+        />
+      </section>
+
+      {/* 3. 励磁电感取值 */}
+      <section className="mb-14">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          3. 励磁电感取值约束<SrcTag text={SRC7} />
+        </h2>
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          L<InlineMath latex="_m" /> 的上下限分别由两个设计目标锁定：
+          式 10 以<b className="text-text-primary">防止磁芯饱和、控制磁损</b>为目标限定最大电感电流；
+          式 11 以<b className="text-text-primary">抑制副边开通震荡、确保主管软开关</b>为条件设定最小（负向）电感电流。
+        </p>
+        <MathBlock
+          label="由峰值电流约束（文献式 10）"
+          important
+          latex={String.raw`L_m = \frac{n V_o (1-D) T_s}{2\,\big( I_{Lm\text{-}max} - \frac{I_o}{n} \big)}`}
+        />
+        <MathBlock
+          label="由谷值电流（ZVS）约束（文献式 11）"
+          important
+          latex={String.raw`L_m = \frac{n V_o (1-D) T_s}{2\,\big( \frac{I_o}{n} - I_{Lm\text{-}min} \big)}`}
+        />
+      </section>
+
+      {/* 4. 谐振腔电流精确表达式 */}
+      <section className="mb-14">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          4. 谐振腔电流精确表达式（释能阶段）<SrcTag text={SRC7} />
+        </h2>
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          副管 S2 开通后，励磁电感被副边反射电压钳位退出谐振，原边退化为
+          L<InlineMath latex="_r" /> 与 C<InlineMath latex="_r" /> 的<b className="text-text-primary">二元件谐振</b>。
+          对两种谐振回路分别定义特征阻抗与角频率：
+        </p>
+        <MathBlock
+          label="三元件谐振（主管开通，文献式 15、16）"
+          latex={String.raw`Z_1 = \sqrt{\frac{L_r + L_m}{C_r}}, \qquad \omega_{r1} = \frac{1}{\sqrt{(L_r + L_m)\, C_r}}`}
+        />
+        <MathBlock
+          label="二元件谐振（副管开通，文献式 17、18）"
+          important
+          latex={String.raw`Z_2 = \sqrt{\frac{L_r}{C_r}}, \qquad \omega_{r2} = \frac{1}{\sqrt{L_r C_r}}`}
+        />
+        <MathBlock
+          label="S2 导通初始时刻谐振电容电压（文献式 13、14）"
+          multiline
+          latex={String.raw`\begin{aligned} v_{Cr0} &= V_{in} - \frac{I_{Lm\text{-}max} - I_{Lm\text{-}min}\cos(\omega_{r1} D T_s)}{\sin(\omega_{r2} D T_s)} \cdot Z_1 \\ v_{Cr1} &= V_{in} - (V_{in} - v_{Cr0})\cos(\omega_{r1} D T_s) + I_{Lm\text{-}min} Z_1 \sin(\omega_{r1} D T_s) \end{aligned}`}
+        />
+        <MathBlock
+          label="副管导通期间原边谐振电流（文献式 19）"
+          important
+          latex={String.raw`i_{Lr2}(t) = \frac{n V_o - V_{Cr}(t_1)}{Z_2}\sin\!\big(\omega_{r2}(t-t_1)\big) + I_{Lm\text{-}max}\cos\!\big(\omega_{r2}(t-t_1)\big)`}
+        />
+        <MathBlock
+          label="副边电流 = 原边两电流之差折算（文献式 21）"
+          important
+          latex={String.raw`i_s(t) = n \cdot \big( i_{Lr}(t) - i_{Lm}(t) \big)`}
         />
         <p className="text-text-secondary text-sm leading-relaxed">
-          设计时通常取纹波系数 <InlineMath latex="K_r = \Delta I_{Lm}/I_{Lm,avg} \ge 2" />，
-          保证谷值电流为负，从而为 ZVS 提供换流能量。反解励磁电感：
+          式 19 解释了副边电流为何呈半正弦谐振脉冲：i<InlineMath latex="_{Lr2}" /> 以
+          ω<InlineMath latex="_{r2}" /> 正弦摆动而 i<InlineMath latex="_{Lm}" /> 近似线性，
+          二者之差在 I<InlineMath latex="_{Lr}" /> 回落到 I<InlineMath latex="_{Lm}" /> 时归零——二极管 ZCS。
         </p>
-        <MathBlock
-          stepNumber={3}
-          label="励磁电感设计式"
-          important
-          latex={String.raw`L_m = \frac{V_{in}(1-D)\,D}{K_r \cdot I_{Lm,avg} \cdot f_s}`}
-        />
       </section>
 
-      {/* 4. ZVS 条件 */}
+      {/* 5. 死区时间精确分析 */}
       <section className="mb-14">
-        <h2 className="text-xl font-semibold text-text-primary mb-4">4. ZVS 能量条件与死区时间</h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          5. 死区时间：寄生参数谐振分析<SrcTag text={SRC8} />
+        </h2>
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          Q2 关断后，负向谷值电流须在开关节点完成电荷转移：把
-          <InlineMath latex="C_{oss,eq}" /> 从 0 充到 <InlineMath latex="V_{in}" />
-          （Q1 侧放电、Q2 侧充电）。能量守恒角度：
+          两管均关断的死区内，谐振电流给原边开关管结电容（2C<InlineMath latex="_{oss}" />）与
+          副边整流管结电容的原边折算值 C<InlineMath latex="_{ps}" /> 充放电。
+          由于死区极短，励磁电流视为恒值；谐振由 L<InlineMath latex="_r" /> 与两电容的串联等效决定：
         </p>
         <MathBlock
-          stepNumber={1}
-          label="ZVS 能量判据"
+          label="副边整流管结电容的原边折算"
+          latex={String.raw`C_{ps} = \frac{C_{oss,sec}}{n^2}`}
+        />
+        <MathBlock
+          label="寄生谐振角频率与周期（文献式）"
           important
-          latex={String.raw`\frac{1}{2} L_m I_{valley}^2 \;\ge\; \frac{1}{2} C_{oss,eq} V_{in}^2`}
+          multiline
+          latex={String.raw`\omega_r = \frac{1}{\sqrt{\dfrac{2 C_{oss}\, C_{ps}}{2 C_{oss} + C_{ps}}\, L_r}}, \qquad T_{\omega r} = 2\pi \sqrt{\frac{2 C_{oss}\, C_{ps}}{2 C_{oss} + C_{ps}}\, L_r}`}
         />
-        <p className="text-text-secondary text-sm leading-relaxed">
-          换流过程近似为 <InlineMath latex="L_m" /> 与 <InlineMath latex="C_{oss,eq}" />
-          的谐振，Vsw 从 0 上升到 V<InlineMath latex="_{in}" /> 需要约四分之一谐振周期：
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          S1 关断后，谐振电流按电容电流分配规律在两支路间分配，随时间按余弦演化（S2 关断后形式相同，
+          初始条件换为负峰值 I<InlineMath latex="_{Lm-min}" />）：
         </p>
         <MathBlock
-          stepNumber={2}
-          label="死区时间下限"
-          latex={String.raw`t_{dead} \;\ge\; \frac{\pi}{2}\sqrt{L_m \, C_{oss,eq}}`}
+          label="S1 关断后谐振腔电流（文献式）"
+          important
+          multiline
+          latex={String.raw`i_{Lr}(t) \approx I_{Lm\text{-}max} \cdot \frac{2 C_{oss}}{2 C_{oss} + C_{ps}} + I_{Lm\text{-}max} \cdot \frac{C_{ps}}{2 C_{oss} + C_{ps}} \cos(\omega_r t)`}
         />
+        <MathBlock
+          label="S2 关断后谐振腔电流（文献式）"
+          multiline
+          latex={String.raw`i_{Lr}(t) \approx I_{Lm\text{-}min} \cdot \frac{2 C_{oss}}{2 C_{oss} + C_{ps}} + I_{Lm\text{-}min} \cdot \frac{C_{ps}}{2 C_{oss} + C_{ps}} \cos(\omega_r t)`}
+        />
+        <MathBlock
+          label="最小死区时间（结电容线性充电近似，文献式）"
+          important
+          latex={String.raw`T_{d1min} = \frac{2 C_{oss} V_{in}}{I_{Lm\text{-}max}}, \qquad T_{d2min} = \frac{2 C_{oss} V_{in}}{|I_{Lm\text{-}min}|}`}
+        />
+        <div className="card-surface p-5 my-4 border-accent/40">
+          <h3 className="text-accent-light font-semibold text-sm mb-2">关键设计约束：T<sub>d1min</sub> &lt; T<sub>ωr</sub>/2</h3>
+          <p className="text-text-secondary text-sm leading-relaxed">
+            电流跌落可降低副边电流峰值与有效值，但若 S2 导通期间谐振电流跌到等于励磁电流（副边电流 A 点归零），
+            会在原边变压器内形成环流、增加损耗，并干扰副边同步整流驱动。因此取最小死区时间接近但不超过
+            半个寄生谐振周期，此时电流跌落幅度最大。由此导出谐振电感最小值：
+          </p>
+          <MathBlock
+            label="谐振电感最小值（文献式）"
+            important
+            latex={String.raw`L_r \;\ge\; \frac{4 C_{oss}^2 V_{in}^2}{\pi^2 I_{Lm\text{-}max}^2} \times \frac{2 C_{oss} + C_{ps}}{2 C_{oss}\, C_{ps}}`}
+          />
+          <p className="text-text-muted text-xs mt-2">
+            谐振电感感值仅影响电流跌落的时间；跌落幅值与时间由原、副边开关管结电容共同决定。
+          </p>
+        </div>
       </section>
 
-      {/* 5. 隔直电容 */}
+      {/* 6. ZVS 限制条件 */}
       <section className="mb-14">
-        <h2 className="text-xl font-semibold text-text-primary mb-4">5. 隔直电容 C<sub>b</sub> 与谐振频率</h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          6. ZVS 限制条件<SrcTag text={SRC7} />
+        </h2>
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          <InlineMath latex="C_b" /> 与漏感 <InlineMath latex="L_r" /> 构成串联谐振，
-          谐振频率须远低于开关频率，避免与增益特性耦合：
+          死区时间受控制器芯片最小死区限制；确定 MOSFET 后 C<InlineMath latex="_{ds}" /> 已知，
+          即可反解所需的负向励磁峰值电流，再代入式 11 求得 L<InlineMath latex="_m" />：
         </p>
         <MathBlock
-          stepNumber={1}
-          label="谐振频率约束"
-          latex={String.raw`f_r = \frac{1}{2\pi\sqrt{L_r C_b}} \;\le\; \frac{f_s}{5}`}
-        />
-        <p className="text-text-secondary text-sm leading-relaxed">
-          同时 <InlineMath latex="C_b" /> 吸收导通期电流电荷，产生电压纹波：
-        </p>
-        <MathBlock
-          stepNumber={2}
-          label="电容电压纹波"
+          label="ZVS 死区限制（文献式）"
           important
-          latex={String.raw`\Delta V_{Cb} = \frac{I_{Lm,avg} \cdot D}{C_b \cdot f_s} \;\le\; 5\% \cdot V_{Cb}`}
+          latex={String.raw`t_{dead} \;\ge\; \frac{2 C_{ds} V_{in}}{|I_{Lm\text{-}min}|}`}
+        />
+        <MathBlock
+          label="能量形式的 ZVS 判据（等价表述）"
+          latex={String.raw`\frac{1}{2} L_m I_{Lm\text{-}min}^2 \;\ge\; \frac{1}{2} C_{oss,eq} V_{in}^2`}
         />
       </section>
 
-      {/* 6. 电流应力 */}
+      {/* 7. 电流有效值 */}
+      <section className="mb-14">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          7. 原副边电流有效值<SrcTag text={SRC7} />
+        </h2>
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          精确值需对分段函数在周期内做均方根积分（建议用 MathCAD 等工具数值求解）：
+        </p>
+        <MathBlock
+          label="精确均方根积分（文献式 22、23）"
+          multiline
+          latex={String.raw`I_{prms} = \sqrt{\frac{1}{T_s}\int_0^{T_s} i_p(t)^2\, dt}, \qquad I_{srms} = \sqrt{\frac{1}{T_s}\int_0^{T_s} i_s(t)^2\, dt}`}
+        />
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          工程简易算法按三角波近似（结果略偏大，对变压器绕组线径选择有利）：
+        </p>
+        <MathBlock
+          label="三角波近似有效值（文献式）"
+          latex={String.raw`I_{prms} = I_{pk}\sqrt{\frac{D}{3}}, \qquad I_{srms} = I_{sk}\sqrt{\frac{1-D}{3}}`}
+        />
+      </section>
+
+      {/* 8. 简易算法 */}
       <section>
-        <h2 className="text-xl font-semibold text-text-primary mb-4">6. 电流应力汇总</h2>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
+          8. 简易设计算法（纹波率法）<SrcTag text={SRC7} />
+        </h2>
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          AHB 能量传递本质与反激类似，可忽略谐振器件影响、直接按反激方法估算，
+          但<b className="text-text-primary">必须校核励磁电感取值满足死区时间限制</b>。
+          从电感尺寸、器件应力与效率出发，电流纹波率一般取 r = 0.4：
+        </p>
         <MathBlock
-          label="原边电流有效值（梯形波近似）"
-          latex={String.raw`I_{pri,rms} = \sqrt{D\left(I_{Lm,avg}^2 + \frac{\Delta I_{Lm}^2}{12}\right)}`}
+          label="电流纹波率定义与平均电流（文献式 24、25）"
+          latex={String.raw`r = \frac{\Delta I_p}{I_{Lm\text{-}avg}} = 0.4, \qquad I_{Lm\text{-}avg} = \frac{I_o}{n}`}
         />
         <MathBlock
-          label="副边电流有效值"
-          latex={String.raw`I_{sec,rms} = \sqrt{(1-D)\left((n I_{Lm,avg})^2 + \frac{(n\,\Delta I_{Lm})^2}{12}\right)}`}
-        />
-        <MathBlock
-          label="输出电容纹波电流"
-          latex={String.raw`I_{Co,rms} = \sqrt{I_{sec,rms}^2 - I_{out}^2}`}
-        />
-        <MathBlock
-          label="器件电压应力"
+          label="原边纹波电流与励磁电感（文献式 27、28）"
           important
-          latex={String.raw`V_{DS} = V_{in,max}, \qquad V_{diode} = \frac{V_{in,max}}{n} + V_o`}
+          latex={String.raw`\Delta I_p = 0.4 \cdot \frac{I_o}{n} = \frac{V_{in}\, D}{L_m f_{sw}} \quad\Rightarrow\quad L_m = \frac{V_{in}\, D}{\Delta I_p \cdot f_{sw}}`}
         />
+        <p className="text-text-muted text-xs">
+          注：式 27 为文献的简化形式；更精确的纹波表达式应计入隔直电容压降，即
+          ΔI = V<InlineMath latex="_{in}" />(1−D)D/(L<InlineMath latex="_m" />f<InlineMath latex="_s" />），
+          设计工具页采用精确式计算。
+        </p>
       </section>
     </div>
   )

@@ -68,6 +68,8 @@ function PointTable({ title, p }: { title: string; p: AhbOperatingPoint }) {
     ['隔直电容纹波 ΔVcb', `${p.deltaVCb.toFixed(2)} V`],
     ['ZVS 能量裕量', `${p.zvsMargin.toFixed(2)} ×`],
     ['所需死区时间', `${(p.deadtimeNeed * 1e9).toFixed(0)} ns`],
+    ['死区下限 Td1min（S1关断）', `${(p.td1min * 1e9).toFixed(0)} ns`],
+    ['死区下限 Td2min（S2关断）', p.td2min === Infinity ? '∞（谷值非负）' : `${(p.td2min * 1e9).toFixed(0)} ns`],
   ]
   return (
     <div className="card-surface p-5">

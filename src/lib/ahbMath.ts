@@ -44,6 +44,8 @@ export interface AhbOperatingPoint {
   zvsMargin: number     // ZVS 能量裕量（储能/需求）
   deadtimeOk: boolean   // 死区时间是否满足谐振换流要求
   deadtimeNeed: number  // 谐振换流所需死区 ≈ (π/2)·√(Lm·C_eq) (s)
+  td1min: number        // 文献式最小死区（S1 关断，线性充电）: C_eq·V_in/I_pk (s)
+  td2min: number        // 文献式最小死区（S2 关断，线性充电）: C_eq·V_in/|I_valley| (s)
 }
 
 export interface AhbDesignResult {
@@ -100,10 +102,15 @@ export function operatingPoint(inp: AhbInputs, n: number, lm: number, cb: number
   const deadtimeNeed = (Math.PI / 2) * Math.sqrt(lm * inp.cEq)
   const deadtimeOk = zvsEnergyOk && inp.deadtime >= deadtimeNeed
 
+  // 文献（八）线性充电近似：T_dmin = C_eq·V_in / I
+  const td1min = (inp.cEq * vin) / Math.max(iPk, 1e-9)
+  const td2min = iValley < 0 ? (inp.cEq * vin) / Math.abs(iValley) : Infinity
+
   return {
     vin, duty, iLmAvg, deltaI, iPk, iValley,
     iPriRms, iSecAvg, iSecPk, iSecRms, iCoRms,
     vCb, deltaVCb, zvsEnergyOk, zvsMargin, deadtimeOk, deadtimeNeed,
+    td1min, td2min,
   }
 }
 
