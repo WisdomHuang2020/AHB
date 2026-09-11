@@ -260,6 +260,36 @@ export default function Derivations() {
           设计工具页采用精确式计算。
         </p>
       </section>
+
+      {/* 9. 隔直电容工程设计与器件应力 */}
+      <section>
+        <h2 className="text-xl font-semibold text-text-primary mb-4">9. 隔直电容 C<sub>r</sub> 工程设计与器件应力</h2>
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          C<InlineMath latex="_r" /> 与 L<InlineMath latex="_r" /> 的谐振频率须远低于开关频率，
+          避免谐振与增益特性耦合；同时 C<InlineMath latex="_r" /> 吸收导通期电流电荷产生电压纹波，
+          工程上限制在 V<InlineMath latex="_{Cr}" /> 的 5% 以内：
+        </p>
+        <MathBlock
+          label="谐振频率约束"
+          important
+          latex={String.raw`f_r = \frac{1}{2\pi\sqrt{L_r C_r}} \;\le\; \frac{f_s}{5}`}
+        />
+        <MathBlock
+          label="电容电压纹波约束"
+          latex={String.raw`\Delta V_{Cr} = \frac{I_{Lm\text{-}avg} \cdot D}{C_r \cdot f_s} \;\le\; 5\% \cdot V_{Cr}`}
+        />
+        <p className="text-text-secondary text-sm leading-relaxed mb-2">
+          器件电压应力由桥臂钳位与副边反射决定——这正是 AHB 相对传统反激的优势（无 RCD 尖峰）：
+        </p>
+        <MathBlock
+          label="器件电压应力"
+          important
+          latex={String.raw`V_{DS1} = V_{DS2} = V_{in,max}, \qquad V_{D1} = \frac{V_{in,max}}{n} + V_o`}
+        />
+        <p className="text-text-muted text-xs">
+          注：副边二极管/同步整流管选型时，需在上式基础上再计入换流边沿的寄生振铃余量（见工作原理页实测波形 A 点）。
+        </p>
+      </section>
     </div>
   )
 }

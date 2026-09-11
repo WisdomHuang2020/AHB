@@ -77,6 +77,8 @@ export function designLm(inp: AhbInputs, n: number): number {
 /** 给定 Vin 计算一个稳态工作点 */
 export function operatingPoint(inp: AhbInputs, n: number, lm: number, cb: number, vin: number): AhbOperatingPoint {
   const duty = (n * (inp.vout + inp.vd)) / vin
+  // 计入效率的工程形式；文献七式(9) I_Lm-avg = I_o/n 为其 η=1、Vd=0 的理想形式
+  // （因 Vin·D = n(Vo+Vd)，P/(η·Vin·D) = Io·Vo/(η·n(Vo+Vd)) ≈ Io/(η·n)）
   const iLmAvg = inp.pout / (inp.eta * vin * duty)
   const deltaI = (vin * (1 - duty) * duty) / (lm * inp.fs)
   const iPk = iLmAvg + deltaI / 2

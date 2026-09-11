@@ -67,9 +67,9 @@ function PointTable({ title, p }: { title: string; p: AhbOperatingPoint }) {
     ['隔直电容电压 Vcb', `${p.vCb.toFixed(1)} V`],
     ['隔直电容纹波 ΔVcb', `${p.deltaVCb.toFixed(2)} V`],
     ['ZVS 能量裕量', `${p.zvsMargin.toFixed(2)} ×`],
-    ['所需死区时间', `${(p.deadtimeNeed * 1e9).toFixed(0)} ns`],
-    ['死区下限 Td1min（S1关断）', `${(p.td1min * 1e9).toFixed(0)} ns`],
-    ['死区下限 Td2min（S2关断）', p.td2min === Infinity ? '∞（谷值非负）' : `${(p.td2min * 1e9).toFixed(0)} ns`],
+    ['所需死区（谐振近似）', `${(p.deadtimeNeed * 1e9).toFixed(0)} ns`],
+    ['死区下限 Td1min（S1关断·文献式）', `${(p.td1min * 1e9).toFixed(0)} ns`],
+    ['死区下限 Td2min（S2关断·文献式）', p.td2min === Infinity ? '∞（谷值非负）' : `${(p.td2min * 1e9).toFixed(0)} ns`],
   ]
   return (
     <div className="card-surface p-5">
@@ -178,6 +178,11 @@ export default function Designer() {
             <PointTable title={`Vin = ${inputs.vinNom} V（额定）`} p={result.points.nom} />
             <PointTable title={`Vin = ${inputs.vinMax} V（高压）`} p={result.points.max} />
           </div>
+          <p className="text-text-muted text-xs leading-relaxed">
+            计算依据说明：① 励磁平均电流计入效率 η（推导页式 9 为 η=1 的理想形式 I_o/n，二者在 η=1、V_d=0 时等价）；
+            ② 原/副边 RMS 按梯形波近似（推导页 §7 积分式的工程近似，副边未计入谐振半正弦形状，结果偏保守，对绕组选型有利）；
+            ③「所需死区（谐振近似）」为 L_m-C_eq 谐振换流估计，「死区下限 Td1/Td2min」为文献（八）线性充电式，两者应同时满足。
+          </p>
 
           {/* 警告 */}
           {result.warnings.length > 0 && (
