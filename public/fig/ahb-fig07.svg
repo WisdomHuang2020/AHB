@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 520" width="1160" height="520">
+  <rect x="0" y="0" width="1160" height="520" fill="#ffffff"/>
+  <path d="M75,218 L75,20 L245,20" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,20 L245,130" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M75,272 L75,455 L245,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="75" cy="245" r="27" stroke="#000" stroke-width="2.5" fill="none"/>
+  <path d="M69,232 L81,232 M75,226 L75,238" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M69,260 L81,260" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <text x="22" y="252" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">V<tspan dy="6" font-size="65%">in</tspan></text>
+  <path d="M245,130 L221,130" stroke="#BCBCBC" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,185 L221,185" stroke="#BCBCBC" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M221,125 L221,148 M221,156 L221,172 M221,179 L221,190" stroke="#BCBCBC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M213,138 L213,177" stroke="#BCBCBC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M213,158 L160,158" stroke="#BCBCBC" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,130 L291,130 L291,185 L245,185" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M263,130 L263,144" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M255,144 L271,144" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="255,162 271,162 263,146" fill="#000"/>
+  <path d="M263,162 L263,185" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M279,130 L279,152" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M270,154 L288,154" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M270,164 L288,164" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M279,164 L279,185" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,295 L221,295" stroke="#BCBCBC" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,350 L221,350" stroke="#BCBCBC" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M221,290 L221,313 M221,321 L221,337 M221,344 L221,355" stroke="#BCBCBC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M213,303 L213,342" stroke="#BCBCBC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M213,323 L160,323" stroke="#BCBCBC" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,295 L291,295 L291,350 L245,350" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M263,295 L263,309" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M255,309 L271,309" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="255,327 271,327 263,311" fill="#000"/>
+  <path d="M263,327 L263,350" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M279,295 L279,317" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M270,319 L288,319" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M270,329 L288,329" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M279,329 L279,350" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <text x="168" y="146" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#BCBCBC">S<tspan dy="6" font-size="65%">1</tspan></text>
+  <text x="300" y="152" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="24" fill="#000">C<tspan dy="6" font-size="65%">DS1</tspan></text>
+  <text x="168" y="311" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#BCBCBC">S<tspan dy="6" font-size="65%">2</tspan></text>
+  <text x="300" y="317" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="24" fill="#000">C<tspan dy="6" font-size="65%">DS2</tspan></text>
+  <path d="M245,185 L245,295" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M245,350 L245,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="245" cy="262" r="4" fill="#000"/>
+  <circle cx="245" cy="455" r="4" fill="#000"/>
+  <text x="150" y="282" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">V<tspan dy="6" font-size="65%">mid</tspan></text>
+  <path d="M245,262 L370,262" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M370,262 a11,11 0 0 1 22,0 a11,11 0 0 1 22,0 a11,11 0 0 1 22,0 a11,11 0 0 1 22,0" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M458,262 L640,262" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <text x="398" y="238" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">L<tspan dy="6" font-size="65%">r</tspan></text>
+  <circle cx="640" cy="262" r="4" fill="#000"/>
+  <path d="M640,262 L640,285" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M640,285 a16,15 0 0 0 0,30 a16,15 0 0 0 0,30 a16,15 0 0 0 0,30 a16,15 0 0 0 0,30 a16,15 0 0 0 0,30" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M640,435 L640,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="640" cy="455" r="4" fill="#000"/>
+  <path d="M700,282 L700,438" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M713,282 L713,438" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M735,265 L735,285" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M735,285 a16,15 0 0 1 0,30 a16,15 0 0 1 0,30 a16,15 0 0 1 0,30 a16,15 0 0 1 0,30 a16,15 0 0 1 0,30" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M735,435 L735,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <text x="666" y="300" font-family="Georgia,serif" font-size="28" fill="#000">*</text>
+  <text x="712" y="472" font-family="Georgia,serif" font-size="28" fill="#000">*</text>
+  <text x="666" y="474" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">T</text>
+  <text x="545" y="385" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">L<tspan dy="6" font-size="65%">m</tspan></text>
+  <text x="662" y="392" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">n</text>
+  <text x="720" y="382" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">1</text>
+  <path d="M245,455 L392,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M392,438 L392,472" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M408,438 L408,472" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M408,455 L640,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <text x="412" y="442" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">C<tspan dy="6" font-size="65%">r</tspan></text>
+  <path d="M735,265 L812,265" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <polygon points="812,251 812,279 842,265" fill="#000"/>
+  <path d="M842,249 L842,281" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <text x="806" y="236" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">D<tspan dy="6" font-size="65%">1</tspan></text>
+  <path d="M842,265 L1095,265" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="960" cy="265" r="4" fill="#000"/>
+  <path d="M960,265 L960,368" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M938,370 L982,370" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M938,384 L982,384" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M960,384 L960,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="960" cy="455" r="4" fill="#000"/>
+  <text x="896" y="384" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000">C<tspan dy="6" font-size="65%">o</tspan></text>
+  <path d="M1095,265 L1095,300" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <rect x="1081" y="300" width="28" height="120" fill="#fff" stroke="#000" stroke-width="2.2"/>
+  <path d="M1095,420 L1095,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M1095,455 L735,455" stroke="#000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <text x="1114" y="314" font-family="Georgia,serif" font-size="24" fill="#000">+</text>
+  <text x="1114" y="436" font-family="Georgia,serif" font-size="24" fill="#000">−</text>
+  <text x="1130" y="332" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#000" transform="rotate(90 1130 332)">V<tspan dy="6" font-size="65%">o</tspan></text>
+  <path d="M240,258 L240,40 Q240,28 228,28 L157,28 Q145,28 145,40 L145,242 Q145,254 157,254 L236,254" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="9 7"/>
+  <polygon points="233,124 247,124 240,106" fill="#C0392B"/>
+  <polygon points="200,21 200,35 184,28" fill="#C0392B"/>
+  <path d="M240,292 L457,292 Q465,292 465,300 L465,407 Q465,415 457,415 L115,415" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="9 7"/>
+  <path d="M215,292 L215,415" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="9 7"/>
+  <polygon points="208,376 222,376 215,392" fill="#C0392B"/>
+  <path d="M652,312 L652,405" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="9 7"/>
+  <polygon points="645,314 659,314 652,298" fill="#C0392B"/>
+  <text x="660" y="340" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="24" fill="#C0392B">I<tspan dy="6" font-size="65%">lm</tspan></text>
+  <text x="598" y="248" font-family="Georgia,serif" font-size="26" fill="#C0392B">−</text>
+  <text x="626" y="250" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#C0392B">V<tspan dy="6" font-size="65%">lm</tspan></text>
+  <text x="598" y="502" font-family="Georgia,serif" font-size="26" fill="#C0392B">+</text>
+  <path d="M778,300 L1037,300 Q1045,300 1045,308 L1045,417 Q1045,425 1037,425 L778,425 Q770,425 770,417 L770,308 Q770,300 778,300 Z" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="9 7"/>
+  <polygon points="763,364 777,364 770,348" fill="#C0392B"/>
+  <text x="795" y="408" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#C0392B">I<tspan dy="6" font-size="65%">d</tspan></text>
+  <path d="M1011,312 L1060,312 Q1068,312 1068,320 L1068,415 Q1068,423 1060,423 L1011,423 Q1003,423 1003,415 L1003,320 Q1003,312 1011,312 Z" stroke="#C0392B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="9 7"/>
+  <polygon points="996,376 1010,376 1003,360" fill="#C0392B"/>
+  <text x="1022" y="358" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#C0392B">I<tspan dy="6" font-size="65%">O</tspan></text>
+  <text x="415" y="340" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="26" fill="#C0392B">I<tspan dy="6" font-size="65%">lr</tspan></text>
+</svg>

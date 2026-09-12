@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1130 600" width="1130" height="600">
+  <style>
+    .w   { stroke:#000; stroke-width:2.2; fill:none; stroke-linecap:round; }
+    .wc  { stroke:#000; stroke-width:2.5; fill:none; stroke-linecap:round; }
+    .wg  { stroke:#B9B9B9; stroke-width:2.2; fill:none; stroke-linecap:round; }
+    .wcg { stroke:#B9B9B9; stroke-width:2.5; fill:none; stroke-linecap:round; }
+    .wr  { stroke:#C0392B; stroke-width:2.8; fill:none; stroke-linecap:round; stroke-dasharray:9 7; }
+    .var { font: italic 22px Georgia, 'Times New Roman', serif; fill:#000; }
+    .varr{ font: italic 22px Georgia, 'Times New Roman', serif; fill:#C0392B; }
+    .varg{ font: italic 22px Georgia, 'Times New Roman', serif; fill:#B9B9B9; }
+    .cn  { font: 24px 'Microsoft YaHei', 'SimHei', sans-serif; fill:#000; }
+    .dot { fill:#000; }
+    .f   { fill:#000; }
+    .fg  { fill:#B9B9B9; }
+    .arr { fill:#C0392B; }
+  </style>
+
+  <rect x="0" y="0" width="1130" height="600" fill="#ffffff"/>
+
+  <!-- ============ Vin 与母线 ============ -->
+  <path class="w" d="M88,78 L290,78"/>
+  <path class="w" d="M88,78 L88,236"/>
+  <path class="w" d="M88,288 L88,450"/>
+  <circle class="wc" cx="88" cy="262" r="26"/>
+  <path class="w" d="M82,250 L94,250 M88,244 L88,256"/>
+  <path class="w" d="M82,276 L94,276"/>
+  <text class="var" x="18" y="272">V<tspan dy="6" font-size="65%">in</tspan></text>
+
+  <!-- 半桥竖母线 -->
+  <path class="w" d="M290,78 L290,450"/>
+
+  <!-- ============ S1 MOSFET(关断,灰色; C_DS1 参与谐振,黑色) ============ -->
+  <path class="wg" d="M290,165 L264,165"/>
+  <path class="wg" d="M290,235 L264,235"/>
+  <path class="wcg" d="M264,160 L264,185 M264,192 L264,218 M264,225 L264,240"/>
+  <path class="wcg" d="M256,175 L256,225"/>
+  <path class="wg" d="M256,200 L200,200"/>
+  <path class="wg" d="M290,165 L334,165 L334,235 L290,235"/>
+  <path class="wg" d="M303,165 L303,181"/>
+  <polygon class="fg" points="295,197 311,197 303,181"/>
+  <path class="wcg" d="M295,181 L311,181"/>
+  <path class="wg" d="M303,197 L303,235"/>
+  <path class="w" d="M322,165 L322,192"/>
+  <path class="wc" d="M313,194 L331,194"/>
+  <path class="wc" d="M313,204 L331,204"/>
+  <path class="w" d="M322,204 L322,235"/>
+  <text class="varg" x="208" y="188">S<tspan dy="6" font-size="65%">1</tspan></text>
+  <text class="var" x="360" y="210">C<tspan dy="6" font-size="65%">DS1</tspan></text>
+
+  <!-- ============ S2 MOSFET(关断,灰色; C_DS2 参与谐振,黑色) ============ -->
+  <path class="wg" d="M290,330 L264,330"/>
+  <path class="wg" d="M290,400 L264,400"/>
+  <path class="wcg" d="M264,325 L264,350 M264,357 L264,383 M264,390 L264,405"/>
+  <path class="wcg" d="M256,340 L256,390"/>
+  <path class="wg" d="M256,365 L200,365"/>
+  <path class="wg" d="M290,330 L334,330 L334,400 L290,400"/>
+  <path class="wg" d="M303,330 L303,346"/>
+  <polygon class="fg" points="295,362 311,362 303,346"/>
+  <path class="wcg" d="M295,346 L311,346"/>
+  <path class="wg" d="M303,362 L303,400"/>
+  <path class="w" d="M322,330 L322,357"/>
+  <path class="wc" d="M313,359 L331,359"/>
+  <path class="wc" d="M313,369 L331,369"/>
+  <path class="w" d="M322,369 L322,400"/>
+  <text class="varg" x="208" y="353">S<tspan dy="6" font-size="65%">2</tspan></text>
+  <text class="var" x="360" y="380">C<tspan dy="6" font-size="65%">DS2</tspan></text>
+
+  <!-- Vmid 节点 -->
+  <circle class="dot" cx="290" cy="262" r="4"/>
+  <text class="var" x="172" y="292">V<tspan dy="6" font-size="65%">mid</tspan></text>
+
+  <!-- ============ 谐振网络 ============ -->
+  <path class="w" d="M290,262 L390,262"/>
+  <path class="wc" d="M390,262 a10,10 0 0 1 20,0 a10,10 0 0 1 20,0 a10,10 0 0 1 20,0 a10,10 0 0 1 20,0"/>
+  <text class="var" x="415" y="240">L<tspan dy="6" font-size="65%">r</tspan></text>
+  <path class="w" d="M470,262 L640,262"/>
+  <circle class="dot" cx="500" cy="262" r="4"/>
+
+  <!-- Lm 支路 -->
+  <path class="w" d="M500,262 L500,305"/>
+  <path class="wc" d="M500,305 a11,11 0 0 1 0,20 a11,11 0 0 1 0,20 a11,11 0 0 1 0,20 a11,11 0 0 1 0,20"/>
+  <path class="w" d="M500,385 L500,450"/>
+  <circle class="dot" cx="500" cy="450" r="4"/>
+  <text class="var" x="440" y="352">L<tspan dy="6" font-size="65%">m</tspan></text>
+  <text class="var" x="595" y="372">n</text>
+
+  <!-- 底部回线与 Cr -->
+  <path class="w" d="M88,450 L455,450"/>
+  <path class="w" d="M472,450 L1065,450"/>
+  <path class="wc" d="M455,433 L455,467"/>
+  <path class="wc" d="M472,433 L472,467"/>
+  <text class="var" x="448" y="492">C<tspan dy="6" font-size="65%">r</tspan></text>
+
+  <!-- ============ 理想变压器 ============ -->
+  <path class="w" d="M640,262 L640,287"/>
+  <path class="wc" d="M640,287 a10.7,10.7 0 0 0 0,21.4 a10.7,10.7 0 0 0 0,21.4 a10.7,10.7 0 0 0 0,21.4 a10.7,10.7 0 0 0 0,21.4 a10.7,10.7 0 0 0 0,21.4 a10.7,10.7 0 0 0 0,21.4"/>
+  <path class="w" d="M640,415 L640,450"/>
+  <circle class="dot" cx="640" cy="450" r="4"/>
+  <path class="wc" d="M655,282 L655,418"/>
+  <path class="wc" d="M663,282 L663,418"/>
+  <path class="w" d="M676,262 L676,287"/>
+  <path class="wc" d="M676,287 a10.7,10.7 0 0 1 0,21.4 a10.7,10.7 0 0 1 0,21.4 a10.7,10.7 0 0 1 0,21.4 a10.7,10.7 0 0 1 0,21.4 a10.7,10.7 0 0 1 0,21.4 a10.7,10.7 0 0 1 0,21.4"/>
+  <path class="w" d="M676,415 L676,450"/>
+  <circle class="dot" cx="676" cy="450" r="4"/>
+  <text x="620" y="280" style="font:24px Georgia,serif" fill="#000">*</text>
+  <text x="692" y="442" style="font:24px Georgia,serif" fill="#000">*</text>
+  <text class="var" x="655" y="482" text-anchor="middle">T</text>
+  <text class="var" x="710" y="350">1</text>
+
+  <!-- ============ 整流与输出(D1 关断,灰色) ============ -->
+  <path class="wg" d="M676,262 L820,262"/>
+  <polygon class="fg" points="820,250 820,274 848,262"/>
+  <path class="wcg" d="M848,248 L848,276"/>
+  <path class="wg" d="M848,262 L1065,262"/>
+  <text class="varg" x="822" y="242">D<tspan dy="6" font-size="65%">1</tspan></text>
+  <text class="varg" x="740" y="296">I<tspan dy="6" font-size="65%">d</tspan></text>
+
+  <!-- Co 支路 -->
+  <circle class="dot" cx="925" cy="262" r="4"/>
+  <path class="w" d="M925,262 L925,364"/>
+  <path class="wc" d="M905,366 L945,366"/>
+  <path class="wc" d="M905,380 L945,380"/>
+  <path class="w" d="M925,380 L925,450"/>
+  <circle class="dot" cx="925" cy="450" r="4"/>
+  <text class="var" x="866" y="384">C<tspan dy="6" font-size="65%">o</tspan></text>
+
+  <!-- 负载 -->
+  <path class="w" d="M1065,262 L1065,290"/>
+  <rect x="1052" y="290" width="26" height="110" fill="#fff" stroke="#000" stroke-width="2.2"/>
+  <path class="w" d="M1065,400 L1065,450"/>
+  <circle class="dot" cx="1065" cy="450" r="4"/>
+  <text class="var" x="1080" y="306">+</text>
+  <text class="var" x="1080" y="414">−</text>
+  <text class="var" x="1080" y="362">V<tspan dy="6" font-size="65%">o</tspan></text>
+
+  <!-- 其余节点 -->
+  <circle class="dot" cx="290" cy="450" r="4"/>
+
+  <!-- ============ 阶段2 电流路径高亮(红色虚线) ============ -->
+  <!-- 大回路: Vmid→Lr→谐振腔→Cr→底母线→左侧上行→顶母线→C_DS1 下行→Vmid -->
+  <path class="wr" d="M292,266 L302,290 Q304,294 310,294 L472,294 Q482,294 482,304 L482,401 Q482,411 472,411 L160,411 Q150,411 150,401 L150,72 Q150,62 160,62 L326,62 Q336,62 336,70 L336,88"/>
+  <polygon class="arr" points="206,405 206,417 188,411"/>
+  <!-- C_DS1 充电电流(向下) -->
+  <path class="wr" d="M336,88 L340,120 L340,236 Q340,248 332,251 L296,260"/>
+  <polygon class="arr" points="334,182 346,182 340,200"/>
+  <!-- C_DS2 放电电流(向上) -->
+  <path class="wr" d="M344,411 L344,340"/>
+  <polygon class="arr" points="338,352 350,352 344,334"/>
+  <text class="varr" x="400" y="330">I<tspan dy="6" font-size="65%">lr</tspan></text>
+  <!-- Ilm 励磁电流(向下) -->
+  <path class="wr" d="M575,288 L575,386"/>
+  <polygon class="arr" points="569,386 581,386 575,402"/>
+  <text class="varr" x="532" y="315">I<tspan dy="6" font-size="65%">lm</tspan></text>
+  <!-- Vlm 极性: 上-下+ -->
+  <text class="varr" x="520" y="242">−</text>
+  <text class="varr" x="548" y="234">V<tspan dy="6" font-size="65%">lm</tspan></text>
+  <text class="varr" x="520" y="486">+</text>
+  <!-- Io 输出回路 -->
+  <path class="wr" d="M968,304 Q960,304 960,312 L960,338 M960,364 L960,412 Q960,420 968,420 L1032,420 Q1040,420 1040,412 L1040,312 Q1040,304 1032,304 L976,304"/>
+  <polygon class="arr" points="954,364 966,364 960,346"/>
+  <text class="varr" x="984" y="344">I<tspan dy="6" font-size="65%">O</tspan></text>
+
+  <!-- 图题 -->
+  <text class="cn" x="565" y="568" text-anchor="middle">(b) 阶段2（<tspan font-style="italic" font-family="Georgia,serif">t</tspan><tspan dy="6" font-size="70%" font-style="italic" font-family="Georgia,serif">1</tspan><tspan dy="-6">~</tspan><tspan font-style="italic" font-family="Georgia,serif">t</tspan><tspan dy="6" font-size="70%" font-style="italic" font-family="Georgia,serif">2</tspan><tspan dy="-6">）</tspan></text>
+</svg>

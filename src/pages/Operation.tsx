@@ -23,7 +23,7 @@ const stages: Stage[] = [
     id: '1',
     time: 't₀ ~ t₁',
     title: 'S1 导通：原边储能，副边不导电',
-    fig: './fig/ahb-fig03.jpg',
+    fig: './fig/ahb-fig03.svg',
     caption: '(a) 阶段 1（t₀~t₁）：S1 导通、原边储能、副边不导电',
     body: (
       <>
@@ -46,7 +46,7 @@ const stages: Stage[] = [
     id: '2',
     time: 't₁ ~ t₂',
     title: 'S1 关断：结电容充放电，Vmid 谐振下降',
-    fig: './fig/ahb-fig04.jpg',
+    fig: './fig/ahb-fig04.svg',
     caption: '(b) 阶段 2（t₁~t₂）：S1 关断、结电容充放电、Vmid 下降',
     body: (
       <>
@@ -67,7 +67,7 @@ const stages: Stage[] = [
     id: '3',
     time: 't₂ ~ t₃',
     title: 'S2 体二极管导通：副边电压升至 Vo',
-    fig: './fig/ahb-fig05.jpg',
+    fig: './fig/ahb-fig05.svg',
     caption: '(c) 阶段 3（t₂~t₃）：S2 体二极管导通、二次电压升至 Vo',
     body: (
       <>
@@ -87,7 +87,7 @@ const stages: Stage[] = [
     id: '4',
     time: 't₃ ~ t₄',
     title: '能量传递：Cr–Lr 谐振，副边 Id 导通',
-    fig: './fig/ahb-fig06.jpg',
+    fig: './fig/ahb-fig06.svg',
     caption: '(d) 阶段 4（t₃~t₄）：能量传递、Cr–Lr 谐振、副边 Id 导通',
     body: (
       <>
@@ -109,7 +109,7 @@ const stages: Stage[] = [
     id: '5',
     time: 't₄ ~ t₅',
     title: 'S2 ZVS 导通持续：Id 谐振回零，实现 ZCS',
-    fig: './fig/ahb-fig07.jpg',
+    fig: './fig/ahb-fig07.svg',
     caption: '(e) 阶段 5（t₄~t₅）：S2 ZVS 导通、Id 降至零实现 ZCS',
     body: (
       <>
@@ -130,7 +130,7 @@ const stages: Stage[] = [
     id: '6',
     time: 't₅ ~ t₇',
     title: 'S2 关断：Vmid 抬升至 Vin，S1 体二极管导通',
-    fig: './fig/ahb-fig08.jpg',
+    fig: './fig/ahb-fig08.svg',
     caption: '(f) 阶段 6（t₅~t₇）：S2 关断、Vmid 抬升至 Vin、S1 体二极管导通',
     body: (
       <>
@@ -165,7 +165,7 @@ export default function Operation() {
         </h2>
         <div className="card-surface p-6">
           <FigureCard
-            src="./fig/ahb-fig02.jpg"
+            src="./fig/ahb-fig02.svg"
             alt="AHB拓扑关键波形"
             caption="AHB 拓扑关键波形：Vgs1/Vgs2（驱动）、Vds1/Vds2（开关管电压）、ILm（励磁电流）、ILr（谐振腔电流）、Id（副边二极管电流）"
             source={`${SRC1}，p3`}
@@ -217,20 +217,20 @@ export default function Operation() {
         <div className="card-surface p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FigureCard
-              src="./fig/ahb-fig10.png"
+              src="./fig/ahb-fig10.svg"
               alt="S1关断等效电路"
               caption="S1 关断后寄生参数谐振过程等效电路"
               source={`${SRC8}，p2`}
             />
             <FigureCard
-              src="./fig/ahb-fig11.png"
+              src="./fig/ahb-fig11.svg"
               alt="S2关断等效电路"
               caption="S2 关断后寄生参数谐振过程等效电路"
               source={`${SRC8}，p3`}
             />
           </div>
           <FigureCard
-            src="./fig/ahb-fig09.png"
+            src="./fig/ahb-fig09.svg"
             alt="寄生谐振电流波形"
             caption="受寄生参数影响的谐振电流波形：iLr（红）与副边电流 is（蓝），含 ΔILr 跌落与 A 点凹陷"
             source={`${SRC8}，p1`}
@@ -263,7 +263,7 @@ export default function Operation() {
         </h2>
         <div className="card-surface p-6">
           <FigureCard
-            src="./fig/ahb-fig12.png"
+            src="./fig/ahb-fig12.svg"
             alt="实测副边Vds与Id"
             caption="实测波形：副边 Vds（黄）与副边电流 Id（蓝）；A 点 = 谐振峰值，B 点 = ZCS 判断点"
             source={`${SRC6}，p1`}

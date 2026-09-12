@@ -25,7 +25,7 @@ export default function Fundamentals() {
         </h2>
         <div className="card-surface p-6 mb-6">
           <FigureCard
-            src="./fig/ahb-fig01.jpg"
+            src="./fig/ahb-fig01.svg"
             alt="不对称半桥反激变换器拓扑结构"
             caption="不对称半桥反激变换器拓扑结构：方波产生器（S1/S2 半桥）、谐振网络（Lr、Lm、Cr）、理想变压器、整流网络与负载"
             source="《AHB不对称半桥反激电路设计（一）拓扑工作过程详细解读》，p1"
