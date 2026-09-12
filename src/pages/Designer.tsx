@@ -22,10 +22,14 @@ const specFields: FieldDef[] = [
 const designFields: FieldDef[] = [
   { key: 'fs', label: '开关频率', unit: 'kHz', step: 10, scale: 1e-3 },
   { key: 'eta', label: '目标效率', unit: '%', step: 0.5, scale: 100 },
-  { key: 'kRipple', label: '纹波系数 Kr', unit: '', step: 0.1 },
+  // 审核修订 P1-12：标签自明，写明 Kr = ΔI/I_avg（区别于文献纹波率 r = ΔI/(2·I_avg)）
+  { key: 'kRipple', label: '纹波系数 Kr = ΔI_Lm / I_Lm,avg', unit: '', step: 0.1 },
   { key: 'dNom', label: '标称占空比', unit: '', step: 0.01 },
-  { key: 'cEq', label: 'Coss 等效电容', unit: 'pF', step: 10, scale: 1e12 },
+  // 审核修订 P1-11：写明 cEq 定义为开关节点总等效电容 = 2·C_oss
+  { key: 'cEq', label: '开关节点等效电容 Ceq（= 2·Coss）', unit: 'pF', step: 10, scale: 1e12 },
   { key: 'deadtime', label: '死区时间', unit: 'ns', step: 10, scale: 1e9 },
+  // 审核修订 P2-16：副边整流管结电容原边折算（绕组寄生电容），用于文献八 Lr 下限校核
+  { key: 'cPs', label: 'Cps 副边结电容折算', unit: 'pF', step: 10, scale: 1e12 },
 ]
 
 function Field({ def }: { def: FieldDef }) {
@@ -167,7 +171,7 @@ export default function Designer() {
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border/50 text-xs">
-              <div><span className="text-text-muted">漏感+串感 Lr ≈ </span><span className="font-mono text-text-primary">{(result.lr * 1e6).toFixed(1)} µH</span></div>
+              <div><span className="text-text-muted">漏感+串感 Lr ≈ </span><span className="font-mono text-text-primary">{(result.lr * 1e6).toFixed(1)} µH</span><span className="text-text-muted">（文献八下限 {(result.lrMin * 1e6).toFixed(1)} µH）</span></div>
               <div><span className="text-text-muted">输出电流 </span><span className="font-mono text-text-primary">{result.iout.toFixed(2)} A</span></div>
               <div><span className="text-text-muted">MOSFET 应力 </span><span className="font-mono text-text-primary">{result.vMos.toFixed(0)} V</span></div>
               <div><span className="text-text-muted">二极管应力 </span><span className="font-mono text-text-primary">{result.vDiode.toFixed(1)} V</span></div>
@@ -182,8 +186,10 @@ export default function Designer() {
           </div>
           <p className="text-text-muted text-xs leading-relaxed">
             计算依据说明：① 励磁平均电流计入效率 η（推导页式 9 为 η=1 的理想形式 I_o/n，二者在 η=1、V_d=0 时等价）；
-            ② 原/副边 RMS 按梯形波近似（推导页 §7 积分式的工程近似，副边未计入谐振半正弦形状，结果偏保守，对绕组选型有利）；
-            ③「所需死区（谐振近似）」为 L_m-C_eq 谐振换流估计，「死区下限 Td1/Td2min」为文献（八）线性充电式，两者应同时满足；
+            ② 原/副边 RMS 按梯形波近似（推导页 §7 积分式的工程近似；副边导通期均值按 Io/(1−D) 计，
+            未计入谐振半正弦形状，结果偏保守，对绕组选型有利）；
+            ③「所需死区（谐振近似）」为基于 L_m 的保守估计（文献八为 L_r 口径），「死区下限 Td1/Td2min」为文献（八）线性充电式，
+            三者取大者判定，需同时满足；
             ④ Cr 按文献（八）ZCS 调谐条件求解——令 S2 关断时刻 i_Lr 恰好回落到谷值电流 I_Lm-min（副边电流归零），
             该条件仅在调谐点（默认取额定输入）精确成立，低/高压点的残流漂移为固有物理现象，可在特性曲线页「ZCS 调谐匹配表」中查看。
           </p>

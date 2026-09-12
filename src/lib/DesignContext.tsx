@@ -15,6 +15,7 @@ const defaultInputs: AhbInputs = {
   dNom: 0.45,
   cEq: 80e-12,
   deadtime: 300e-9,
+  cPs: 100e-12, // 审核修订 P2-16：副边整流管结电容原边折算（绕组寄生电容）
   turnsRatio: undefined,
 }
 

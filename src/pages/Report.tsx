@@ -82,7 +82,7 @@ export default function Report() {
                 <Row k="开关频率" v={`${(inputs.fs / 1000).toFixed(0)} kHz`} />
                 <Row k="目标效率" v={`${(inputs.eta * 100).toFixed(1)} %`} />
                 <Row k="纹波系数 Kr / 标称占空比" v={`${inputs.kRipple} / ${inputs.dNom}`} />
-                <Row k="Coss 等效 / 死区时间" v={`${(inputs.cEq * 1e12).toFixed(0)} pF / ${(inputs.deadtime * 1e9).toFixed(0)} ns`} />
+                <Row k="Ceq（=2·Coss）/ 死区时间" v={`${(inputs.cEq * 1e12).toFixed(0)} pF / ${(inputs.deadtime * 1e9).toFixed(0)} ns`} />
               </tbody>
             </table>
           </div>

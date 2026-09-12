@@ -116,7 +116,7 @@ export default function Derivations() {
         <MathBlock
           label="S2 导通初始时刻谐振电容电压（文献式 13、14）"
           multiline
-          latex={String.raw`\begin{aligned} v_{Cr0} &= V_{in} - \frac{I_{Lm\text{-}max} - I_{Lm\text{-}min}\cos(\omega_{r1} D T_s)}{\sin(\omega_{r2} D T_s)} \cdot Z_1 \\ v_{Cr1} &= V_{in} - (V_{in} - v_{Cr0})\cos(\omega_{r1} D T_s) + I_{Lm\text{-}min} Z_1 \sin(\omega_{r1} D T_s) \end{aligned}`}
+          latex={String.raw`\begin{aligned} v_{Cr0} &= V_{in} - \frac{I_{Lm\text{-}max} - I_{Lm\text{-}min}\cos(\omega_{r1} D T_s)}{\sin(\omega_{r1} D T_s)} \cdot Z_1 \\ v_{Cr1} &= V_{in} - (V_{in} - v_{Cr0})\cos(\omega_{r1} D T_s) + I_{Lm\text{-}min} Z_1 \sin(\omega_{r1} D T_s) \end{aligned}`}
         />
         <MathBlock
           label="副管导通期间原边谐振电流（文献式 19）"
@@ -128,10 +128,24 @@ export default function Derivations() {
           important
           latex={String.raw`i_s(t) = n \cdot \big( i_{Lr}(t) - i_{Lm}(t) \big)`}
         />
+        {/* 审核第二轮 remodel：说明式21 的符号约定依据（电荷守恒） */}
+        <p className="text-text-muted text-xs leading-relaxed">
+          参考方向约定：i<InlineMath latex="_{Lr}" /> 取原边串联回路正向（储能阶段电流上升方向），
+          i<InlineMath latex="_{Lm}" /> 取励磁支路正向，i<InlineMath latex="_s" /> 以副边流出同名端为正。
+          式 21 的文字形式依赖参考方向定义（文献七为扫描件，其 S2 导通等效电路中 i
+          <InlineMath latex="_{Lr}" /> 箭头取上支路向左、V<InlineMath latex="_{Cr}" /> 标注 −+）。
+          本站计算核按物理约束确定实现形式：串联 C<InlineMath latex="_r" /> 隔直 ⇒
+          ⟨i<InlineMath latex="_{Lr}" />⟩ = 0；输出电荷守恒 ⇒ ⟨i<InlineMath latex="_s" />⟩ =
+          n·⟨i<InlineMath latex="_{Lm}" />⟩ = I<InlineMath latex="_o" />。二者唯一确定本站实现为
+          i<InlineMath latex="_s" /> = n·(i<InlineMath latex="_{Lm}" /> − i<InlineMath latex="_{Lr}" />
+          ），与上式仅相差参考方向约定，物理等价；该约定下波形电荷守恒（标称点 mean(i
+          <InlineMath latex="_s" />) ≈ 1.04·I<InlineMath latex="_o" />）。
+        </p>
         <p className="text-text-secondary text-sm leading-relaxed">
           式 19 解释了副边电流为何呈半正弦谐振脉冲：i<InlineMath latex="_{Lr2}" /> 以
-          ω<InlineMath latex="_{r2}" /> 正弦摆动而 i<InlineMath latex="_{Lm}" /> 近似线性，
-          二者之差在 I<InlineMath latex="_{Lr}" /> 回落到 I<InlineMath latex="_{Lm}" /> 时归零——二极管 ZCS。
+          ω<InlineMath latex="_{r2}" /> 正弦摆动（先下凹低于 i<InlineMath latex="_{Lm}" /> 再回升）
+          而 i<InlineMath latex="_{Lm}" /> 近似线性，二者之差在 i<InlineMath latex="_{Lr}" />
+          回升到 i<InlineMath latex="_{Lm}" /> 时归零——二极管 ZCS。
         </p>
       </section>
 
@@ -155,6 +169,14 @@ export default function Derivations() {
           multiline
           latex={String.raw`\omega_r = \frac{1}{\sqrt{\dfrac{2 C_{oss}\, C_{ps}}{2 C_{oss} + C_{ps}}\, L_r}}, \qquad T_{\omega r} = 2\pi \sqrt{\frac{2 C_{oss}\, C_{ps}}{2 C_{oss} + C_{ps}}\, L_r}`}
         />
+        {/* 审核修订 P1-9：说明设计工具死区估计的电感口径差异 */}
+        <p className="text-text-muted text-xs leading-relaxed">
+          注：文献八的死区谐振按 L<InlineMath latex="_r" /> 口径（上式）；设计工具页的
+          「所需死区（谐振近似）」采用 (π/2)√(L<InlineMath latex="_m" />·C<InlineMath latex="_{eq}" />
+          ），为<b className="text-text-secondary">基于 L_m 的保守估计</b>（死区期间副边不导通、
+          L<InlineMath latex="_m" /> 参与谐振，且 L<InlineMath latex="_m" /> ≫ L
+          <InlineMath latex="_r" />，所得所需死区更长）。
+        </p>
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
           S1 关断后，谐振电流按电容电流分配规律在两支路间分配，随时间按余弦演化（S2 关断后形式相同，
           初始条件换为负峰值 I<InlineMath latex="_{Lm-min}" />）：
@@ -243,21 +265,30 @@ export default function Derivations() {
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
           AHB 能量传递本质与反激类似，可忽略谐振器件影响、直接按反激方法估算，
           但<b className="text-text-primary">必须校核励磁电感取值满足死区时间限制</b>。
-          从电感尺寸、器件应力与效率出发，电流纹波率一般取 r = 0.4：
+          从电感尺寸、器件应力与效率出发，电流纹波率一般取 r = 0.4（文献的简化估算沿用普通反激口径）：
         </p>
         <MathBlock
           label="电流纹波率定义与平均电流（文献式 24、25）"
-          latex={String.raw`r = \frac{\Delta I_p}{I_{Lm\text{-}avg}} = 0.4, \qquad I_{Lm\text{-}avg} = \frac{I_o}{n}`}
+          latex={String.raw`r = \frac{\Delta I_p}{2\, I_{Lm\text{-}avg}} = 0.4, \qquad I_{Lm\text{-}avg} = \frac{I_o}{n}`}
         />
+        {/* 审核修订 P1-12：统一纹波率/纹波系数两种口径；审核修订 P2-14：式27 正文补 (1−D) 因子 */}
+        <p className="text-text-muted text-xs leading-relaxed mb-2">
+          口径统一说明：文献的<b className="text-text-secondary">纹波率</b> r = ΔI/(2·I_avg)（半峰-峰纹波与均值之比），
+          设计工具输入的<b className="text-text-secondary">纹波系数</b> K<InlineMath latex="_r" /> = ΔI/I_avg = 2r。
+          文献取 r = 0.4（即 K<InlineMath latex="_r" /> = 0.8）时谷值仍为正，只适用于普通反激估算；
+          AHB 需负谷值提供 ZVS 能量，故须 K<InlineMath latex="_r" /> &gt; 2
+          （即 i<InlineMath latex="_{valley}" /> = I_avg·(1 − K<InlineMath latex="_r" />/2) &lt; 0），
+          设计工具默认 K<InlineMath latex="_r" /> = 4。
+        </p>
         <MathBlock
           label="原边纹波电流与励磁电感（文献式 27、28）"
           important
-          latex={String.raw`\Delta I_p = 0.4 \cdot \frac{I_o}{n} = \frac{V_{in}\, D}{L_m f_{sw}} \quad\Rightarrow\quad L_m = \frac{V_{in}\, D}{\Delta I_p \cdot f_{sw}}`}
+          latex={String.raw`\Delta I_p = 2r \cdot \frac{I_o}{n} = \frac{V_{in}\,(1-D)\, D}{L_m f_{sw}} \quad\Rightarrow\quad L_m = \frac{V_{in}\,(1-D)\, D}{\Delta I_p \cdot f_{sw}}`}
         />
         <p className="text-text-muted text-xs">
-          注：式 27 为文献的简化形式；更精确的纹波表达式应计入隔直电容压降，即
-          ΔI = V<InlineMath latex="_{in}" />(1−D)D/(L<InlineMath latex="_m" />f<InlineMath latex="_s" />），
-          设计工具页采用精确式计算。
+          注：文献式 27 原文为简化形式（未含 (1−D) 因子）；上式已按计入隔直电容压降的精确纹波表达式
+          ΔI = V<InlineMath latex="_{in}" />(1−D)D/(L<InlineMath latex="_m" />f<InlineMath latex="_s" />）
+          补全，与设计工具页的计算一致。
         </p>
       </section>
 
@@ -296,17 +327,21 @@ export default function Derivations() {
           latex={String.raw`\Delta V_{Cr} = \frac{I_{Lm\text{-}avg} \cdot D}{C_r \cdot f_s} \quad(\text{工程上建议} \le 20\% \cdot V_{Cr})`}
         />
         <p className="text-text-secondary text-sm leading-relaxed mb-2">
-          调谐条件仅在调谐点（默认取额定输入）精确成立；输入电压偏离后，S2 关断时刻的副边残流漂移为固有物理现象，
-          低压输入时残流可达数安，可在特性曲线页「ZCS 调谐匹配表」中量化查看。
+          调谐条件仅在调谐点（默认取额定输入）精确成立；输入电压偏离后，S2 关断时刻的副边残流漂移为固有物理现象：
+          低压输入时 T<InlineMath latex="_{off}" /> 变短、谐振弧来不及回到谷值，残流可达数安（ZCS 丢失）；
+          高压输入时谐振弧提前回谷（提前 ZCS）。可在特性曲线页「ZCS 调谐匹配表」中量化查看。
           器件电压应力由桥臂钳位与副边反射决定——这正是 AHB 相对传统反激的优势（无 RCD 尖峰）：
         </p>
         <MathBlock
           label="器件电压应力"
           important
-          latex={String.raw`V_{DS1} = V_{DS2} = V_{in,max}, \qquad V_{D1} = \frac{V_{in,max}}{n} + V_o`}
+          latex={String.raw`V_{DS1} = V_{DS2} = V_{in,max}, \qquad V_{D1} = \frac{V_{in,max}}{n} - V_d = V_o + \frac{V_{in,max}\,(1-D_{min})}{n}`}
         />
         <p className="text-text-muted text-xs">
-          注：副边二极管/同步整流管选型时，需在上式基础上再计入换流边沿的寄生振铃余量（见工作原理页实测波形 A 点）。
+          {/* 审核修订 P0-7：原式 Vin_max/n + Vo 高估 42%，严格式化简为 Vin_max/n − Vd */}
+          注：默认算例 V<InlineMath latex="_{D1}" /> = 420/8.52 − 0.6 ≈ 48.7 V
+          （由原 D = n(V<InlineMath latex="_o" />+V<InlineMath latex="_d" />)/V<InlineMath latex="_{in}" />
+          消去 n 即得两式等价）。副边二极管/同步整流管选型时，需在上式基础上再计入换流边沿的寄生振铃余量（见工作原理页实测波形 A 点）。
         </p>
       </section>
     </div>

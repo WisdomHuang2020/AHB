@@ -7,7 +7,8 @@ const compareRows = [
   { item: '原边结构', trad: '单管 + RCD 钳位', acf: '单管 + 有源钳位支路', ahb: '半桥双管互补驱动' },
   { item: '开关管数量', trad: '1', acf: '2（主 + 钳位）', ahb: '2（半桥）' },
   { item: 'ZVS 实现', trad: '否', acf: '是（依赖钳位管时序）', ahb: '是（励磁电流自然换流）' },
-  { item: '变压器励磁', trad: '单向励磁', acf: '单向励磁', ahb: '双向对称励磁，磁芯利用率高' },
+  // 审核修订 P0-8：ACF 与 AHB 均为双向励磁（正负不对称，正向偏磁 Io/n），仅传统反激为单向励磁
+  { item: '变压器励磁', trad: '单向励磁', acf: '双向励磁（正负不对称，正向偏磁 Io/n）', ahb: '双向励磁（正负不对称，正向偏磁 Io/n）' },
   { item: '电压应力', trad: 'Vin + 尖峰', acf: 'Vin / (1−D)', ahb: 'Vin（被桥臂钳位）' },
   { item: '典型应用', trad: '低成本小功率', acf: '45~100W 快充', ahb: '45~140W 高密度快充 / PD 适配器' },
 ]
@@ -82,13 +83,16 @@ export default function Fundamentals() {
       {/* 为什么双向励磁 */}
       <section className="mb-14">
         <h2 className="text-xl font-semibold text-text-primary mb-4 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5 text-primary-light" /> 关键特性：双向对称励磁
+          <Lightbulb className="w-5 h-5 text-primary-light" /> 关键特性：双向不对称励磁
         </h2>
         <div className="space-y-4 text-text-secondary leading-relaxed">
           <p>
             由于隔直电容 <InlineMath latex="C_r" /> 的存在，变压器原边在导通期承受
             <InlineMath latex="V_{in}(1-D)" />、关断期承受 <InlineMath latex="-D \cdot V_{in}" />，
-            磁通在正负两个方向对称摆动。相比传统反激的单向励磁，磁芯的 B-H 曲线利用率约提高一倍，
+            磁通在正负两个方向摆动，但<b className="text-text-primary">并不对称</b>：
+            励磁电流含正向直流偏置 I<InlineMath latex="_o" />/n（式 9），磁通摆幅为
+            ΔB·(1/2 + 1/K<InlineMath latex="_r" />）。相比传统反激的单向励磁（摆幅约 ΔB/2），
+            K<InlineMath latex="_r" /> = 4 时摆幅约 0.75ΔB，即磁芯 B-H 曲线利用率提高约 0.5 倍，
             同等功率下可选用更小型号的磁芯。
           </p>
           <p>

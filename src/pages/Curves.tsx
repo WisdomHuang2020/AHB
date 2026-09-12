@@ -34,9 +34,9 @@ export default function Curves() {
     return { pts, ratios }
   }, [n])
 
-  // 2. 精确谐振波形（标称输入点，式6/19/21）
+  // 2. 精确谐振波形（标称输入点，式6/19 + 分相释能模型）
   const waveData = useMemo(
-    () => resonantWaveform(inputs, n, lm, lr, cb, inputs.vinNom).map((p) => ({
+    () => resonantWaveform(inputs, n, lm, lr, cb, inputs.vinNom).pts.map((p) => ({
       t: Number(p.t.toFixed(3)),
       iLm: Number(p.iLm.toFixed(4)),
       iLr: Number(p.iLr.toFixed(4)),
@@ -141,8 +141,8 @@ export default function Curves() {
           </ResponsiveContainer>
           <div className="text-text-muted text-sm mt-3 space-y-1.5">
             <p>· 储能阶段（0 ~ D·T<sub>s</sub>）：三元件谐振近似线性，i<sub>Lr</sub> 与 i<sub>Lm</sub> 重合上升（式 6 第一支路）。</p>
-            <p>· 释能阶段（D·T<sub>s</sub> ~ T<sub>s</sub>）：i<sub>Lm</sub> 被副边反射电压钳位线性下降；i<sub>Lr</sub> 按 L<sub>r</sub>-C<sub>r</sub> 二元件谐振正弦下凹后回升（式 19）。</p>
-            <p>· 副边电流 i<sub>s</sub> = n·(i<sub>Lm</sub> − i<sub>Lr</sub>) 呈半正弦谐振脉冲（式 21）；C<sub>r</sub> 按文献八 ZCS 调谐，S2 关断时刻 i<sub>Lr</sub> 恰好回到 I<sub>Lm-min</sub>，i<sub>s</sub> 归零。</p>
+            <p>· 释能阶段（D·T<sub>s</sub> ~ T<sub>s</sub>）：i<sub>Lm</sub> 被副边反射电压钳位线性下降；i<sub>Lr</sub> 按 L<sub>r</sub>-C<sub>r</sub> 二元件谐振正弦下凹（式 19），低于 i<sub>Lm</sub> 的区间 D1 导通。</p>
+            <p>· 副边电流 i<sub>s</sub> = n·(i<sub>Lm</sub> − i<sub>Lr</sub>) 呈半正弦谐振脉冲（式 21，符号约定见推导页式 21 注）；C<sub>r</sub> 按文献八 ZCS 调谐，S2 关断时刻 i<sub>Lr</sub> 恰好回到 I<sub>Lm-min</sub>，i<sub>s</sub> 归零；归零后（t<sub>z</sub> ~ T<sub>s</sub>）i<sub>Lr</sub> 与 i<sub>Lm</sub> 汇合缓慢回落，周期末闭合到谷值。</p>
           </div>
         </div>
       </section>
@@ -165,6 +165,7 @@ export default function Curves() {
             <tbody>
               {zcsRows.map((r) => {
                 const ok = r.p.isEnd < 0.1
+                const early = ok && r.p.isEndRaw < -0.05 // 谐振弧提前回到谷值（t_z < T_off）
                 return (
                   <tr key={r.label} className="border-b border-border/50 last:border-0">
                     <td className="px-5 py-3 text-text-primary font-medium">{r.label}</td>
@@ -174,9 +175,9 @@ export default function Curves() {
                     <td className="px-5 py-3 text-text-secondary font-mono">{r.p.isEnd.toFixed(3)} A</td>
                     <td className="px-5 py-3">
                       {ok ? (
-                        <span className="inline-flex items-center gap-1 text-success text-xs"><CheckCircle2 className="w-3.5 h-3.5" /> ZCS 成立</span>
+                        <span className="inline-flex items-center gap-1 text-success text-xs"><CheckCircle2 className="w-3.5 h-3.5" /> {early ? 'ZCS（提前归零）' : 'ZCS 成立（调谐点）'}</span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-accent-light text-xs"><AlertTriangle className="w-3.5 h-3.5" /> 漂移</span>
+                        <span className="inline-flex items-center gap-1 text-accent-light text-xs"><AlertTriangle className="w-3.5 h-3.5" /> 漂移（关断残流）</span>
                       )}
                     </td>
                   </tr>
@@ -186,8 +187,10 @@ export default function Curves() {
           </table>
         </div>
         <p className="text-text-muted text-sm mt-3">
-          固定频率 PWM 下占空比随输入电压变化，释能谐振弧长随之改变，ZCS 只在调谐点（额定输入）严格成立；
-          低压/高压点的残存电流是 AHB 反激的固有特性，幅值越小换流损耗越低。
+          固定频率 PWM 下占空比随输入电压变化，释能谐振弧长随之改变，ZCS 只在调谐点（额定输入）严格成立。
+          高压点 T<sub>off</sub> 变长，谐振弧提前回到谷值（t<sub>z</sub> &lt; T<sub>off</sub>，提前 ZCS，其后原边仅励磁分量环流）；
+          低压点 T<sub>off</sub> 变短，谐振弧来不及回谷，S2 关断时仍有残流（ZCS 丢失，低压点残流可达数安）——
+          这是 AHB 反激的固有特性，残流越小换流损耗越低。
         </p>
       </section>
 
@@ -226,8 +229,11 @@ export default function Curves() {
             </LineChart>
           </ResponsiveContainer>
           <p className="text-text-muted text-sm mt-3">
-            实线低于同色虚线（临界值 I_crit = −V_in·√(C_eq/L_m)，推导页 §6 能量判据）时 ZVS 成立。
-            负载减轻后谷值电流变浅，ZVS 逐渐丢失，工程上通常配合降频或突发模式。
+            {/* 审核修订 P0-6：图注改为与曲线数据一致的中性表述，并标注固定 D 示意 */}
+            固定 D 示意（D 由输入电压决定，与负载无关）：实线低于同色虚线（临界值
+            I_crit = −V_in·√(C_eq/L_m)，推导页 §6 能量判据）时 ZVS 成立。
+            固定占空比下纹波 ΔI 不变而励磁平均电流随负载减轻而下降，轻载时谷值电流变深（更负）、
+            ZVS 能量更充足；实际轻载策略（降频、突发模式）的影响不在本图覆盖范围内。
           </p>
         </div>
       </section>

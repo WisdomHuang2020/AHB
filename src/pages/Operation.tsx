@@ -103,7 +103,7 @@ const stages: Stage[] = [
         </p>
       </>
     ),
-    math: String.raw`I_d = n \cdot \big( I_{Lr} - I_{Lm} \big), \qquad f_r = \frac{1}{2\pi\sqrt{L_r C_r}}`,
+    math: String.raw`I_d = n \cdot \big( I_{Lm} - I_{Lr} \big), \qquad f_r = \frac{1}{2\pi\sqrt{L_r C_r}}`,
   },
   {
     id: '5',
@@ -114,8 +114,8 @@ const stages: Stage[] = [
     body: (
       <>
         <p>
-          谐振继续，I<InlineMath latex="_{Lr}" /> 下降到与 I<InlineMath latex="_{Lm}" />
-          相等，副边电流 I<InlineMath latex="_d" /> 自然归零——二极管
+          谐振继续，I<InlineMath latex="_{Lr}" /> 谐振下凹后回升、再次与 I<InlineMath latex="_{Lm}" />
+          汇合，副边电流 I<InlineMath latex="_d" /> 自然归零——二极管
           <b className="text-text-primary">零电流关断（ZCS）</b>，彻底消除反向恢复损耗与尖峰。
         </p>
         <p>
@@ -232,7 +232,7 @@ export default function Operation() {
           <FigureCard
             src="./fig/ahb-fig09.svg"
             alt="寄生谐振电流波形"
-            caption="受寄生参数影响的谐振电流波形：iLr（红）与副边电流 is（蓝），含 ΔILr 跌落与 A 点凹陷"
+            caption="受寄生参数影响的谐振电流波形：iLr（红）与副边电流 is（蓝），含 ΔILr 跌落与 A 点凹陷。注：本图 A 点（副边电流凹陷）与下方实测图 fig12 的 A 点（Vds 振铃峰值）为不同观测量"
             source={`${SRC8}，p1`}
             maxWidth="max-w-xl mx-auto"
           />
@@ -265,14 +265,16 @@ export default function Operation() {
           <FigureCard
             src="./fig/ahb-fig12.svg"
             alt="实测副边Vds与Id"
-            caption="实测波形：副边 Vds（黄）与副边电流 Id（蓝）；A 点 = 谐振峰值，B 点 = ZCS 判断点"
+            caption="实测波形：副边 Vds（黄）与副边电流 Id（蓝）；A 点 = Vds 振铃峰值（与 fig09 的 A 点电流凹陷为不同观测量），B 点 = ZCS 判断点"
             source={`${SRC6}，p1`}
           />
           <p className="text-text-secondary text-sm leading-relaxed mt-2">
             样机实测中，副边电流 Id 呈半正弦谐振脉冲并在关断前回到零（B 点），验证 ZCS 成立；
             副边 Vds 在换流边沿出现寄生振铃（A 点），其幅度用于校核二极管电压应力裕量——
-            设计工具页给出的二极管应力 V<InlineMath latex="_{diode}" /> = V<InlineMath latex="_{in,max}" />/n + V<InlineMath latex="_o" />
+            {/* 审核修订 P0-7：公式与推导页/计算核同步为 Vin_max/n − Vd */}
+            设计工具页给出的二极管应力 V<InlineMath latex="_{diode}" /> = V<InlineMath latex="_{in,max}" />/n − V<InlineMath latex="_d" />
             需在此基础上再留振铃余量选型。
+            {/* 审核修订 P2-15：消歧——本图 A 点为 Vds 振铃峰值，与 fig09 的 A 点（副边电流凹陷）为不同观测量 */}
           </p>
         </div>
       </section>
