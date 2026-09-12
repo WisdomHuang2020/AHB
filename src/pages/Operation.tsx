@@ -23,7 +23,7 @@ const stages: Stage[] = [
     id: '1',
     time: 't₀ ~ t₁',
     title: 'S1 导通：原边储能，副边不导电',
-    fig: './fig/ahb-fig03.svg',
+    fig: './fig/ahb-fig03.jpg',
     caption: '(a) 阶段 1（t₀~t₁）：S1 导通、原边储能、副边不导电',
     body: (
       <>
@@ -46,7 +46,7 @@ const stages: Stage[] = [
     id: '2',
     time: 't₁ ~ t₂',
     title: 'S1 关断：结电容充放电，Vmid 谐振下降',
-    fig: './fig/ahb-fig04.svg',
+    fig: './fig/ahb-fig04.jpg',
     caption: '(b) 阶段 2（t₁~t₂）：S1 关断、结电容充放电、Vmid 下降',
     body: (
       <>
@@ -67,7 +67,7 @@ const stages: Stage[] = [
     id: '3',
     time: 't₂ ~ t₃',
     title: 'S2 体二极管导通：副边电压升至 Vo',
-    fig: './fig/ahb-fig05.svg',
+    fig: './fig/ahb-fig05.jpg',
     caption: '(c) 阶段 3（t₂~t₃）：S2 体二极管导通、二次电压升至 Vo',
     body: (
       <>
@@ -87,7 +87,7 @@ const stages: Stage[] = [
     id: '4',
     time: 't₃ ~ t₄',
     title: '能量传递：Cr–Lr 谐振，副边 Id 导通',
-    fig: './fig/ahb-fig06.svg',
+    fig: './fig/ahb-fig06.jpg',
     caption: '(d) 阶段 4（t₃~t₄）：能量传递、Cr–Lr 谐振、副边 Id 导通',
     body: (
       <>
@@ -109,7 +109,7 @@ const stages: Stage[] = [
     id: '5',
     time: 't₄ ~ t₅',
     title: 'S2 ZVS 导通持续：Id 谐振回零，实现 ZCS',
-    fig: './fig/ahb-fig07.svg',
+    fig: './fig/ahb-fig07.jpg',
     caption: '(e) 阶段 5（t₄~t₅）：S2 ZVS 导通、Id 降至零实现 ZCS',
     body: (
       <>
@@ -130,7 +130,7 @@ const stages: Stage[] = [
     id: '6',
     time: 't₅ ~ t₇',
     title: 'S2 关断：Vmid 抬升至 Vin，S1 体二极管导通',
-    fig: './fig/ahb-fig08.svg',
+    fig: './fig/ahb-fig08.jpg',
     caption: '(f) 阶段 6（t₅~t₇）：S2 关断、Vmid 抬升至 Vin、S1 体二极管导通',
     body: (
       <>
