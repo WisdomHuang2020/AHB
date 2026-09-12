@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 1302" width="1120" height="1302">
+  <style>
+    .axis { stroke:#000; stroke-width:2.4; fill:none; }
+    .dash { stroke:#000; stroke-width:1.6; fill:none; stroke-dasharray:10 7; }
+    .lead { stroke:#000; stroke-width:1.2; fill:none; }
+    .blue   { stroke:#2E75B6; stroke-width:2.6; fill:none; stroke-linejoin:round; }
+    .purple { stroke:#7B2D8E; stroke-width:2.6; fill:none; stroke-linejoin:round; }
+    .red    { stroke:#C00000; stroke-width:2.6; fill:none; stroke-linejoin:round; }
+    .green  { stroke:#1E9E6A; stroke-width:2.6; fill:none; stroke-linejoin:round; }
+    .var  { font: italic 26px Georgia, 'Times New Roman', serif; }
+    .tim { font: italic 24px Georgia, 'Times New Roman', serif; fill:#000; }
+  </style>
+
+  <!-- 白底 -->
+  <rect x="0" y="0" width="1120" height="1302" fill="#ffffff"/>
+
+  <!-- 主纵轴 -->
+  <path class="axis" d="M115,1235 L115,24"/>
+  <polygon points="115,10 107,30 123,30" fill="#000"/>
+
+  <!-- 五条零轴(带箭头) -->
+  <path class="axis" d="M115,330  L1065,330"/>
+  <polygon points="1090,330 1062,321 1062,339" fill="#000"/>
+  <path class="axis" d="M115,550  L1065,550"/>
+  <polygon points="1090,550 1062,541 1062,559" fill="#000"/>
+  <path class="axis" d="M115,700  L1065,700"/>
+  <polygon points="1090,700 1062,691 1062,709" fill="#000"/>
+  <path class="axis" d="M115,895  L1065,895"/>
+  <polygon points="1090,895 1062,886 1062,904" fill="#000"/>
+  <path class="axis" d="M115,1170 L1065,1170"/>
+  <polygon points="1090,1170 1062,1161 1062,1179" fill="#000"/>
+
+  <!-- 零刻度 0 -->
+  <text class="var" x="104" y="342"  text-anchor="end" fill="#000">0</text>
+  <text class="var" x="104" y="562"  text-anchor="end" fill="#000">0</text>
+  <text class="var" x="104" y="712"  text-anchor="end" fill="#000">0</text>
+  <text class="var" x="104" y="907"  text-anchor="end" fill="#000">0</text>
+  <text class="var" x="104" y="1182" text-anchor="end" fill="#000">0</text>
+
+  <!-- 通道标签 -->
+  <text class="var" x="22" y="228" fill="#2E75B6">V<tspan dy="8" font-size="65%">gs1</tspan></text>
+  <text class="var" x="22" y="264" fill="#7B2D8E">V<tspan dy="8" font-size="65%">gs2</tspan></text>
+  <text class="var" x="22" y="478" fill="#2E75B6">V<tspan dy="8" font-size="65%">ds1</tspan></text>
+  <text class="var" x="22" y="514" fill="#7B2D8E">V<tspan dy="8" font-size="65%">ds2</tspan></text>
+  <text class="var" x="22" y="642" fill="#C00000">I<tspan dy="8" font-size="65%">Lm</tspan></text>
+  <text class="var" x="22" y="838" fill="#1E9E6A">I<tspan dy="8" font-size="65%">Lr</tspan></text>
+  <text class="var" x="22" y="1082" fill="#C00000">I<tspan dy="8" font-size="65%">d</tspan></text>
+
+  <!-- 阶段分界虚线 t0..t7 -->
+  <path class="dash" d="M170,115 L170,1192"/>
+  <path class="dash" d="M500,115 L500,1192"/>
+  <path class="dash" d="M517,115 L517,1192"/>
+  <path class="dash" d="M534,115 L534,1192"/>
+  <path class="dash" d="M551,115 L551,1192"/>
+  <path class="dash" d="M778,115 L778,1192"/>
+  <path class="dash" d="M808,115 L808,1192"/>
+  <path class="dash" d="M834,115 L834,1192"/>
+
+  <!-- ============ Row1: Vgs1 / Vgs2 (高 170, 零 330) ============ -->
+  <!-- Vgs1 蓝: t0-t1 高, t7 之后高 -->
+  <path class="blue" d="M140,330 L170,330 L170,170 L500,170 L500,330 L834,330 L834,170 L1045,170"/>
+  <!-- Vgs2 紫: t0 之前高, t3-t5 高 -->
+  <path class="purple" d="M140,170 L170,170 L170,330 L534,330 L534,170 L778,170 L778,330 L1045,330"/>
+
+  <!-- ============ Row2: Vds1 / Vds2 (高 405, 零 550) ============ -->
+  <!-- Vds1 蓝: t0 前高(振铃下降至零), t2-t4 上升, t4-t5 高, t5-t6 下降 -->
+  <path class="blue" d="M140,405 L148,405 L153,470 L157,552 L161,563 L165,547 L170,550 L517,550 L522,480 L526,408 L530,392 L534,408 L538,398 L542,406 L551,405 L778,405 L784,470 L788,548 L792,562 L796,548 L800,556 L808,550 L1045,550"/>
+  <!-- Vds2 紫: t0 上升后高, t1-t3 振铃下降, t3-t6 零, t6-t7 上升 -->
+  <path class="purple" d="M140,550 L150,550 L155,480 L159,408 L163,392 L167,408 L170,405 L500,405 L506,470 L510,548 L514,562 L518,548 L522,556 L534,550 L808,550 L814,480 L818,408 L822,392 L826,408 L830,405 L834,405 L1045,405"/>
+
+  <!-- ============ Row3: ILm (红, 零 700) ============ -->
+  <path class="red" d="M140,714 L517,610 L795,720 L1045,652"/>
+
+  <!-- ============ Row4: ILr (绿, 零 895) ============ -->
+  <path class="green" d="M140,908 L517,808 L534,821 C558,845 580,878 606,900 C635,925 648,954 668,956 C692,956 722,928 748,906 C762,895 768,894 774,897 L792,907 L810,897 L1045,843"/>
+
+  <!-- ============ Row5: Id (红, 零 1170) ============ -->
+  <path class="red" d="M140,1170 L551,1170 C575,1165 590,1120 610,1075 C628,1035 640,1010 658,1008 C678,1008 695,1040 715,1085 C732,1125 748,1162 778,1170 L1045,1170"/>
+
+  <!-- 底部时间标签引线(扇形错开) -->
+  <path class="lead" d="M500,1194 L487,1226"/>
+  <path class="lead" d="M517,1194 L513,1226"/>
+  <path class="lead" d="M534,1194 L538,1226"/>
+  <path class="lead" d="M551,1194 L564,1226"/>
+  <path class="lead" d="M808,1194 L812,1226"/>
+  <path class="lead" d="M834,1194 L848,1226"/>
+
+  <!-- 底部时间标签 -->
+  <text class="tim" x="170" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">0</tspan></text>
+  <text class="tim" x="485" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">1</tspan></text>
+  <text class="tim" x="512" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">2</tspan></text>
+  <text class="tim" x="539" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">3</tspan></text>
+  <text class="tim" x="566" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">4</tspan></text>
+  <text class="tim" x="778" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">5</tspan></text>
+  <text class="tim" x="812" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">6</tspan></text>
+  <text class="tim" x="850" y="1262" text-anchor="middle">t<tspan dy="6" font-size="70%">7</tspan></text>
+</svg>

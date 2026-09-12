@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 816 440" width="816" height="440">
+  <style>
+    .grid  { stroke:#c9c9c9; stroke-width:1; stroke-dasharray:2 4; }
+    .gridc { stroke:#9e9e9e; stroke-width:1.2; stroke-dasharray:3 4; }
+    .vds   { stroke:#D4A017; stroke-width:2.5; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+    .id    { stroke:#1E88E5; stroke-width:2.5; fill:none; stroke-linejoin:round; stroke-linecap:round; }
+    .pt    { stroke:#E02424; stroke-width:2.5; fill:none; }
+    .ptl   { font: bold 20px 'Microsoft YaHei', 'SimHei', sans-serif; fill:#E02424; }
+    .box   { fill:#F5F7F8; stroke:#CFD8DC; stroke-width:1; }
+    .rd    { font: 13px Consolas, 'Courier New', monospace; fill:#455A64; }
+    .lg    { font: 14px 'Microsoft YaHei', 'SimHei', sans-serif; fill:#333; }
+    .lgr   { font: 14px 'Microsoft YaHei', 'SimHei', sans-serif; fill:#E02424; }
+  </style>
+
+  <!-- 白底 -->
+  <rect x="0" y="0" width="816" height="440" fill="#ffffff"/>
+
+  <!-- ===== 网格（10 x 8 格） ===== -->
+  <g>
+    <path class="grid" d="M81.6,0 L81.6,440 M163.2,0 L163.2,440 M244.8,0 L244.8,440 M326.4,0 L326.4,440 M489.6,0 L489.6,440 M571.2,0 L571.2,440 M652.8,0 L652.8,440 M734.4,0 L734.4,440"/>
+    <path class="gridc" d="M408,0 L408,440"/>
+    <path class="grid" d="M0,55 L816,55 M0,110 L816,110 M0,165 L816,165 M0,275 L816,275 M0,330 L816,330 M0,385 L816,385"/>
+    <path class="gridc" d="M0,220 L816,220"/>
+  </g>
+  <rect x="0.5" y="0.5" width="815" height="439" fill="none" stroke="#90A4AE" stroke-width="1"/>
+
+  <!-- ===== 蓝色迹线：副边电流 Id ===== -->
+  <!-- 左边缘进入的半个谐振电流峰（峰 @65） -->
+  <path class="id" d="M0,310 C20,240 35,224 65,224 C95,224 115,320 150,352"/>
+  <!-- 平台(零电流) 150 -> 270 -->
+  <path class="id" d="M150,352 L270,352"/>
+  <!-- 谐振电流峰 270 -> 440（峰 @355） -->
+  <path class="id" d="M270,352 C300,346 315,224 355,224 C395,224 410,346 440,352"/>
+  <!-- 平台 440 -> 560 -->
+  <path class="id" d="M440,352 L560,352"/>
+  <!-- 谐振电流峰 560 -> 730（峰 @645） -->
+  <path class="id" d="M560,352 C590,346 605,224 645,224 C685,224 700,346 730,352"/>
+  <!-- 平台 730 -> 816 -->
+  <path class="id" d="M730,352 L816,352"/>
+
+  <!-- ===== 金黄迹线：副边 Vds ===== -->
+  <!-- 低位 0 -> 150 -->
+  <path class="vds" d="M0,352 L150,352"/>
+  <!-- 上升沿阻尼振铃 @150，峰值 y=192 -->
+  <path class="vds" d="M150,352 L153,296 L156,192 L163,288 L170,224 L177,268 L184,238 L191,258 L198,245 L205,252 L212,248 L220,248"/>
+  <!-- 高位平台 220 -> 270 -->
+  <path class="vds" d="M220,248 L270,248"/>
+  <!-- 下降沿振铃 @270 -->
+  <path class="vds" d="M270,248 L274,352 L280,368 L287,342 L294,358 L301,349 L308,353 L316,352"/>
+  <!-- 低位 316 -> 440 -->
+  <path class="vds" d="M316,352 L440,352"/>
+  <!-- 上升沿阻尼振铃 @440（A 点所在） -->
+  <path class="vds" d="M440,352 L443,296 L446,192 L453,288 L460,224 L467,268 L474,238 L481,258 L488,245 L495,252 L502,248 L510,248"/>
+  <!-- 高位平台 510 -> 560 -->
+  <path class="vds" d="M510,248 L560,248"/>
+  <!-- 下降沿振铃 @560 -->
+  <path class="vds" d="M560,248 L564,352 L570,368 L577,342 L584,358 L591,349 L598,353 L606,352"/>
+  <!-- 低位 606 -> 730 -->
+  <path class="vds" d="M606,352 L730,352"/>
+  <!-- 上升沿阻尼振铃 @730 -->
+  <path class="vds" d="M730,352 L733,296 L736,192 L743,288 L750,224 L757,268 L764,238 L771,258 L778,245 L785,252 L792,248 L800,248"/>
+  <!-- 高位平台到右边缘 -->
+  <path class="vds" d="M800,248 L816,248"/>
+
+  <!-- ===== A 点：谐振峰值 ===== -->
+  <circle class="pt" cx="452" cy="200" r="27"/>
+  <text class="ptl" x="459" y="207" text-anchor="middle">A</text>
+
+  <!-- ===== B 点：ZCS 判断点（电流过零） ===== -->
+  <circle class="pt" cx="448" cy="350" r="26"/>
+  <text class="ptl" x="456" y="343" text-anchor="middle">B</text>
+
+  <!-- ===== 示波器读数框（左侧） ===== -->
+  <rect class="box" x="14" y="64" width="116" height="24" rx="3"/>
+  <text class="rd" x="22" y="81">V:  196.0 V</text>
+
+  <rect class="box" x="14" y="96" width="116" height="44" rx="3"/>
+  <text class="rd" x="22" y="113">&#916;V:  89.00 V</text>
+  <text class="rd" x="22" y="132">&#916;V/&#916;t:</text>
+
+  <rect class="box" x="14" y="148" width="116" height="24" rx="3"/>
+  <text class="rd" x="22" y="165">V:  107.0 V</text>
+
+  <!-- ===== 时间读数（顶部中央） ===== -->
+  <rect class="box" x="338" y="12" width="130" height="24" rx="3"/>
+  <text class="rd" x="346" y="29">&#916;t: 100.0 ns</text>
+  <rect class="box" x="282" y="44" width="122" height="24" rx="3"/>
+  <text class="rd" x="290" y="61">t: 280.0 ns</text>
+  <rect class="box" x="414" y="44" width="122" height="24" rx="3"/>
+  <text class="rd" x="422" y="61">t: 180.0 ns</text>
+
+  <!-- ===== 图例（右上角） ===== -->
+  <rect class="box" x="556" y="10" width="250" height="100" rx="4"/>
+  <path class="vds" d="M568,32 L596,32"/>
+  <text class="lg" x="604" y="37">副边 Vds（漏源电压）</text>
+  <path class="id" d="M568,56 L596,56"/>
+  <text class="lg" x="604" y="61">副边电流 Id</text>
+  <text class="lgr" x="568" y="85">A：谐振峰值点</text>
+  <text class="lgr" x="690" y="85">B：ZCS 判断点</text>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 655 570" width="655" height="570">
+  <style>
+    .axis  { stroke:#000; stroke-width:2.2; fill:none; }
+    .dot   { stroke:#555; stroke-width:1.4; fill:none; stroke-dasharray:2 4; }
+    .red   { stroke:#D42420; stroke-width:2.6; fill:none; stroke-linejoin:round; }
+    .blue  { stroke:#1F1FC8; stroke-width:2.6; fill:none; stroke-linejoin:round; }
+    .green { stroke:#1E8A4C; stroke-width:2.2; fill:none; stroke-dasharray:7 5; }
+    .var { font: italic 21px Georgia, 'Times New Roman', serif; fill:#000; }
+    .tim { font: italic 20px Georgia, 'Times New Roman', serif; fill:#000; }
+  </style>
+
+  <!-- 白底 -->
+  <rect x="0" y="0" width="655" height="570" fill="#ffffff"/>
+
+  <!-- 纵轴(两图共用) -->
+  <path class="axis" d="M98,505 L98,18"/>
+  <polygon points="98,6 91,24 105,24" fill="#000"/>
+
+  <!-- 上图零轴 -->
+  <path class="axis" d="M98,218 L545,218"/>
+  <polygon points="566,218 542,210 542,226" fill="#000"/>
+  <!-- 下图零轴 -->
+  <path class="axis" d="M98,498 L548,498"/>
+  <polygon points="569,498 545,490 545,506" fill="#000"/>
+
+  <!-- 轴标签 -->
+  <text class="var" x="560" y="208">t</text>
+  <text class="var" x="563" y="488">t</text>
+  <text class="var" x="66" y="32">i<tspan dy="5" font-size="68%">Lr</tspan></text>
+  <text class="var" x="62" y="306">i<tspan dy="5" font-size="68%">s</tspan></text>
+  <text class="var" x="86" y="230" text-anchor="end">0</text>
+  <text class="var" x="86" y="510" text-anchor="end">0</text>
+
+  <!-- 幅值标注 -->
+  <text class="var" x="90" y="68"  text-anchor="end">I<tspan dy="5" font-size="68%">Lm_max</tspan></text>
+  <text class="var" x="90" y="352" text-anchor="end">I<tspan dy="5" font-size="68%">s_max</tspan></text>
+
+  <!-- 水平点线: ILm_max / Is_max -->
+  <path class="dot" d="M98,48 L285,48"/>
+  <path class="dot" d="M98,333 L380,333"/>
+  <!-- ΔILr 下方点线 -->
+  <path class="dot" d="M206,87 L285,87"/>
+
+  <!-- 竖直点线: t1 t2 t3 TS -->
+  <path class="dot" d="M183,48 L183,498"/>
+  <path class="dot" d="M205,88 L205,498"/>
+  <path class="dot" d="M455,224 L455,498"/>
+  <path class="dot" d="M478,224 L478,498"/>
+
+  <!-- 绿色虚线: 理想线性下降 -->
+  <path class="green" d="M193,48 L478,240"/>
+
+  <!-- 红色 iLr 曲线 -->
+  <path class="red" d="M98,243 L193,48 L203,82
+    C215,92 240,120 265,155
+    C295,195 320,215 350,245
+    C385,278 415,301 440,295
+    C455,290 458,272 454,252
+    L457,229 L460,251 L463,233 L466,248 L469,236 L472,245 L475,239 L478,242
+    C490,224 505,198 522,182"/>
+
+  <!-- 蓝色 is 曲线 -->
+  <path class="blue" d="M98,498 L183,498 L205,415
+    C214,442 224,462 240,467
+    C256,472 268,462 285,430
+    C310,382 344,338 378,333
+    C412,330 432,388 444,440
+    C449,464 452,484 455,496
+    L458,485 L461,506 L464,490 L467,503 L470,494 L473,501 L476,496 L479,499
+    L545,498"/>
+
+  <!-- A 点 -->
+  <circle cx="250" cy="468" r="3.2" fill="#000"/>
+  <text class="var" x="263" y="490">A</text>
+
+  <!-- ΔILr 双向箭头 -->
+  <path d="M258,54 L258,82" stroke="#000" stroke-width="1.6" fill="none"/>
+  <polygon points="258,48 253,58 263,58" fill="#000"/>
+  <polygon points="258,87 253,77 263,77" fill="#000"/>
+  <text class="var" x="272" y="78" font-style="normal">Δ<tspan font-style="italic">I</tspan><tspan dy="5" font-size="68%" font-style="italic">Lr</tspan></text>
+
+  <!-- 底部时间标签 -->
+  <text class="tim" x="183" y="528" text-anchor="middle">t<tspan dy="5" font-size="70%">1</tspan></text>
+  <text class="tim" x="210" y="528" text-anchor="middle">t<tspan dy="5" font-size="70%">2</tspan></text>
+  <text class="tim" x="448" y="528" text-anchor="middle">t<tspan dy="5" font-size="70%">3</tspan></text>
+  <text class="tim" x="490" y="528" text-anchor="middle">T<tspan dy="5" font-size="70%">S</tspan></text>
+</svg>
