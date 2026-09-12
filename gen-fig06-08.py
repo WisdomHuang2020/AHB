@@ -80,10 +80,10 @@ def base(cfg):
     # ---------- 半桥 ----------
     f.append(mosfet(130, cfg["s1"], cfg["s1"], cfg["s1box"], cfg["s1dio"], cfg["cds1"]))
     f.append(mosfet(295, cfg["s2"], cfg["s2"], cfg["s2box"], cfg["s2dio"], cfg["cds2"]))
-    f.append(vt(168, 146, "S", "1", cfg["s1"], 26))
-    f.append(vt(300, 152, "C", "DS1", cfg["cds1"], 24))
-    f.append(vt(168, 311, "S", "2", cfg["s2"], 26))
-    f.append(vt(300, 317, "C", "DS2", cfg["cds2"], 24))
+    f.append(vt(156, 146, "S", "1", cfg["s1"], 26))
+    f.append(vt(312, 152, "C", "DS1", cfg["cds1"], 24))
+    f.append(vt(156, 311, "S", "2", cfg["s2"], 26))
+    f.append(vt(312, 317, "C", "DS2", cfg["cds2"], 24))
     # 母线中段/下段 + Vmid 节点
     f.append(p("M245,185 L245,295", BLACK, 2.2))
     f.append(p("M245,350 L245,455", BLACK, 2.2))
@@ -110,7 +110,7 @@ def base(cfg):
     f.append(f'<text x="666" y="300" font-family="Georgia,serif" font-size="28" fill="{BLACK}">*</text>')
     f.append(f'<text x="712" y="472" font-family="Georgia,serif" font-size="28" fill="{BLACK}">*</text>')
     f.append(vt(666, 474, "T", None, BLACK, 26))
-    f.append(vt(545, 385, "L", "m", BLACK, 26))
+    f.append(vt(568, 385, "L", "m", BLACK, 26))
     f.append(vt(662, 392, "n", None, BLACK, 26))
     f.append(vt(720, 382, "1", None, BLACK, 26))
     # ---------- 底母线 + Cr ----------
@@ -146,50 +146,55 @@ def base(cfg):
 
 
 def loop_primary_fig06():
+    """fig06 Ilr 闭合矩形: 左竖贴S2框右缘(带向上箭头), 右竖在初级绕组左~48px。"""
     f = []
-    f.append(p("M293,295 L452,295 Q460,295 460,303 L460,407 Q460,415 452,415 "
-               "L293,415 Q285,415 285,407 L285,303 Q285,295 293,295 Z", RED, 2.2, dash="9 7"))
-    # S2 导通向上箭头(独立,位于 S2 并联盒处)
-    f.append(p("M273,370 L273,334", RED, 2.5))
-    f.append(tri("266,336 280,336 273,318", RED))
+    f.append(p("M302,415 L302,348 M302,322 L302,303 Q302,295 310,295 L548,295 "
+               "Q560,295 560,307 L560,403 Q560,415 548,415 L302,415", RED, 2.2, dash="9 7"))
+    # 左竖向上箭头(S2 导通电流)
+    f.append(tri("294,348 310,348 302,322", RED))
     return "\n  ".join(f)
 
 
-def loop_outer(left_arrow=True, up_arrow=True):
-    """经电源的大回路:Vmid 上 -> 顶 -> 左 -> 下 -> 回 Vmid。"""
-    f = [p("M240,258 L240,40 Q240,28 228,28 L157,28 Q145,28 145,40 "
-           "L145,242 Q145,254 157,254 L236,254", RED, 2.2, dash="9 7")]
-    if up_arrow:
-        f.append(tri("233,124 247,124 240,106", RED))
-    if left_arrow:
-        f.append(tri("200,21 200,35 184,28", RED))
-    return "\n  ".join(f)
+def loop_outer():
+    """经电源侧的外环: 顶边(左端向左箭头)+左竖下行+底端右钩向Vmid。"""
+    return "\n  ".join([
+        p("M112,30 L168,30 Q180,30 180,42 L180,226 Q180,238 192,238 L214,240",
+          RED, 2.2, dash="9 7"),
+        tri("118,23 118,37 102,30", RED)])
+
+
+def cds1_seg():
+    """fig07/08 CDS1 右侧竖虚线: 向上箭头(顶端)。"""
+    return "\n  ".join([
+        p("M296,92 L296,205", RED, 2.2, dash="9 7"),
+        tri("289,92 303,92 296,68", RED)])
 
 
 def loop_ilr_fig07():
-    """fig07 Ilr 回路:带左边(经 CDS2 向下)及底部左延。"""
-    f = [p("M240,292 L457,292 Q465,292 465,300 L465,407 Q465,415 457,415 L115,415",
-           RED, 2.2, dash="9 7")]
-    f.append(p("M215,292 L215,415", RED, 2.2, dash="9 7"))
-    f.append(tri("208,376 222,376 215,392", RED))   # 向下箭头
+    """fig07 Ilr 回路: 顶边+右竖+底边(左端下钩)+CDS2右侧竖线(向下箭头)。"""
+    f = [p("M250,295 L548,295 Q560,295 560,307 L560,403 Q560,415 548,415 "
+           "L115,415 L115,428", RED, 2.2, dash="9 7")]
+    # CDS2 右侧竖虚线(连顶边到底边, 向下箭头)
+    f.append(p("M296,295 L296,368 M296,392 L296,415", RED, 2.2, dash="9 7"))
+    f.append(tri("289,368 303,368 296,392", RED))
     return "\n  ".join(f)
 
 
 def loop_ilr_fig08():
-    """fig08 Ilr 回路:开环,底部延至电源侧。"""
-    return p("M240,292 L457,292 Q465,292 465,300 L465,407 Q465,415 457,415 L115,415",
-             RED, 2.2, dash="9 7")
+    """fig08 Ilr 回路: 顶边+右竖+底边(左端下钩), 无中间竖线。"""
+    return p("M250,295 L548,295 Q560,295 560,307 L560,403 Q560,415 548,415 "
+             "L115,415 L115,428", RED, 2.2, dash="9 7")
 
 
 def ilm_arrow(direction):
-    """Ilm 红色虚线箭头,direction: down / up。"""
+    """Ilm 红色虚线箭头,direction: down(标签在右) / up(标签在左)。"""
     if direction == "down":
         return "\n  ".join([p("M652,305 L652,398", RED, 2.2, dash="9 7"),
                             tri("645,396 659,396 652,412", RED),
                             vt(660, 340, "I", "lm", RED, 24)])
     return "\n  ".join([p("M652,312 L652,405", RED, 2.2, dash="9 7"),
                         tri("645,314 659,314 652,298", RED),
-                        vt(660, 340, "I", "lm", RED, 24)])
+                        vt(598, 340, "I", "lm", RED, 24)])
 
 
 def vlm(sign_top):
@@ -203,19 +208,21 @@ def vlm(sign_top):
 
 
 def loop_id():
-    f = [p("M778,300 L1037,300 Q1045,300 1045,308 L1045,417 Q1045,425 1037,425 "
-           "L778,425 Q770,425 770,417 L770,308 Q770,300 778,300 Z", RED, 2.2, dash="9 7")]
-    f.append(tri("763,364 777,364 770,348", RED))   # 左边向上箭头
-    f.append(vt(795, 408, "I", "d", RED, 26))
+    """Id 副边环: 左竖贴副绕组右缘(上部向上箭头), 包围 Co, 右竖穿 Io 环内。"""
+    f = [p("M783,295 L1023,295 Q1035,295 1035,307 L1035,413 Q1035,425 1023,425 "
+           "L783,425 Q775,425 775,417 L775,340 M775,316 L775,303 Q775,295 783,295",
+           RED, 2.2, dash="9 7")]
+    f.append(tri("768,340 782,340 775,316", RED))   # 左边向上箭头
+    f.append(vt(800, 395, "I", "d", RED, 26))
     return "\n  ".join(f)
 
 
 def loop_io(box, arrow_x, label):
     x1, y1, x2, y2 = box
     f = [p(f"M{x1+8},{y1} L{x2-8},{y1} Q{x2},{y1} {x2},{y1+8} L{x2},{y2-8} Q{x2},{y2} {x2-8},{y2} "
-           f"L{x1+8},{y2} Q{x1},{y2} {x1},{y2-8} L{x1},{y1+8} Q{x1},{y1} {x1+8},{y1} Z",
+           f"L{x1+8},{y2} Q{x1},{y2} {x1},{y2-8} L{x1},{y1+46} M{x1},{y1+30} L{x1},{y1+8} Q{x1},{y1} {x1+8},{y1}",
            RED, 2.2, dash="9 7")]
-    f.append(tri(f"{arrow_x-7},{y1+64} {arrow_x+7},{y1+64} {arrow_x},{y1+48}", RED))
+    f.append(tri(f"{arrow_x-7},{y1+46} {arrow_x+7},{y1+46} {arrow_x},{y1+30}", RED))
     f.append(vt(*label, "I", "O", RED, 26))
     return "\n  ".join(f)
 
@@ -242,7 +249,7 @@ cfg06 = dict(vin=GREY, s1=GREY, s1box=GREY, s1dio=GREY, cds1=GREY,
              s2=BLACK, s2box=BLACK, s2dio=BLACK, cds2=GREY, d1=BLACK,
              vmid_xy=(150, 270))
 extras06 = "\n  ".join([loop_primary_fig06(), ilm_arrow("down"), vlm("-"),
-                        loop_id(), loop_io((1003, 312, 1068, 423), 1003, (1022, 358)),
+                        loop_id(), loop_io((1000, 308, 1058, 415), 1000, (1004, 350)),
                         ilr_label()])
 build("ahb-fig06.svg", cfg06, extras06)
 
@@ -250,8 +257,8 @@ build("ahb-fig06.svg", cfg06, extras06)
 cfg07 = dict(vin=BLACK, s1=GREY, s1box=BLACK, s1dio=BLACK, cds1=BLACK,
              s2=GREY, s2box=BLACK, s2dio=BLACK, cds2=BLACK, d1=BLACK,
              vmid_xy=(150, 282))
-extras07 = "\n  ".join([loop_outer(True, True), loop_ilr_fig07(), ilm_arrow("up"), vlm("-"),
-                        loop_id(), loop_io((1003, 312, 1068, 423), 1003, (1022, 358)),
+extras07 = "\n  ".join([loop_outer(), cds1_seg(), loop_ilr_fig07(), ilm_arrow("up"), vlm("-"),
+                        loop_id(), loop_io((1000, 308, 1058, 415), 1000, (1004, 350)),
                         ilr_label()])
 build("ahb-fig07.svg", cfg07, extras07)
 
@@ -259,7 +266,7 @@ build("ahb-fig07.svg", cfg07, extras07)
 cfg08 = dict(vin=BLACK, s1=GREY, s1box=GREY, s1dio=BLACK, cds1=GREY,
              s2=GREY, s2box=GREY, s2dio=GREY, cds2=GREY, d1=GREY,
              vmid_xy=(150, 282))
-extras08 = "\n  ".join([loop_outer(True, False), loop_ilr_fig08(), ilm_arrow("up"), vlm("+"),
-                        loop_io((1000, 300, 1072, 425), 1000, (1026, 354)),
+extras08 = "\n  ".join([loop_outer(), cds1_seg(), loop_ilr_fig08(), ilm_arrow("up"), vlm("+"),
+                        loop_io((996, 300, 1060, 418), 996, (1012, 350)),
                         ilr_label()])
 build("ahb-fig08.svg", cfg08, extras08)
