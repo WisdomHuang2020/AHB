@@ -1,16 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 558" width="960" height="558">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
   <style>
     .w   { stroke:#000; stroke-width:2.2; fill:none; stroke-linecap:round; }
     .wc  { stroke:#000; stroke-width:2.5; fill:none; stroke-linecap:round; }
     .var { font: italic 26px Georgia, 'Times New Roman', serif; fill:#000; }
     .red { font: italic 26px Georgia, 'Times New Roman', serif; fill:#C00000; }
     .rs  { font: 28px Georgia, 'Times New Roman', serif; fill:#C00000; }
-    .bs  { font: 26px Georgia, 'Times New Roman', serif; fill:#000; }
     .dot { fill:#000; }
     .arw { stroke:#C00000; stroke-width:2.5; fill:none; }
   </style>
 
-  <rect x="0" y="0" width="960" height="558" fill="#ffffff"/>
+  <rect x="0" y="0" width="960" height="540" fill="#ffffff"/>
 
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -19,69 +18,74 @@
   </defs>
 
   <!-- ===== 左母线 + V_B 电压源 ===== -->
-  <path class="w" d="M140,56 L380,56"/>
-  <path class="w" d="M140,56 L140,190"/>
-  <circle class="wc" cx="140" cy="244" r="54"/>
-  <path class="w" d="M132,226 L148,226 M140,218 L140,234"/>
-  <path class="w" d="M132,264 L148,264"/>
-  <path class="w" d="M140,298 L140,432"/>
-  <text class="var" x="76" y="254" text-anchor="end">V<tspan dy="6" font-size="65%">B</tspan></text>
+  <path class="w" d="M140,52 L380,52"/>
+  <path class="w" d="M140,52 L140,188"/>
+  <circle class="wc" cx="140" cy="240" r="52"/>
+  <path class="w" d="M132,222 L148,222 M140,214 L140,230"/>
+  <path class="w" d="M132,258 L148,258"/>
+  <path class="w" d="M140,292 L140,420"/>
+  <text class="var" x="78" y="250" text-anchor="end">V<tspan dy="6" font-size="65%">B</tspan></text>
 
   <!-- ===== 中间桥臂：两个 Coss 串联 ===== -->
-  <path class="w" d="M380,56 L380,134"/>
-  <path class="wc" d="M344,134 L416,134"/>
-  <path class="wc" d="M344,158 L416,158"/>
-  <path class="w" d="M380,158 L380,336"/>
-  <path class="wc" d="M344,336 L416,336"/>
-  <path class="wc" d="M344,360 L416,360"/>
-  <path class="w" d="M380,360 L380,432"/>
-  <circle class="dot" cx="380" cy="212" r="5"/>
-  <text class="var" x="438" y="152">C<tspan dy="6" font-size="65%">oss</tspan></text>
-  <text class="var" x="438" y="356">C<tspan dy="6" font-size="65%">oss</tspan></text>
+  <path class="w" d="M380,52 L380,126"/>
+  <path class="wc" d="M344,126 L416,126"/>
+  <path class="wc" d="M344,150 L416,150"/>
+  <path class="w" d="M380,150 L380,328"/>
+  <path class="wc" d="M344,328 L416,328"/>
+  <path class="wc" d="M344,352 L416,352"/>
+  <path class="w" d="M380,352 L380,420"/>
+  <circle class="dot" cx="380" cy="204" r="5"/>
+  <text class="var" x="438" y="150">C<tspan dy="6" font-size="65%">oss</tspan></text>
+  <text class="var" x="438" y="352">C<tspan dy="6" font-size="65%">oss</tspan></text>
 
   <!-- V_S2 标注（下管 Coss 两端，红色） -->
-  <text class="rs" x="306" y="302">+</text>
-  <text class="red" x="238" y="352">V<tspan dy="6" font-size="65%">S2</tspan></text>
-  <text class="rs" x="308" y="402">&#8722;</text>
+  <text class="rs" x="306" y="316">+</text>
+  <text class="red" x="238" y="350">V<tspan dy="6" font-size="65%">S2</tspan></text>
+  <text class="rs" x="308" y="398">&#8722;</text>
 
-  <!-- ===== i_Lr 电流箭头 + Lr ===== -->
-  <path class="arw" d="M404,212 L472,212" marker-end="url(#arr)"/>
-  <text class="red" x="408" y="186">i<tspan dy="6" font-size="65%">Lr</tspan></text>
-  <path class="w" d="M492,212 a18,18 0 0 1 36,0 a18,18 0 0 1 36,0 a18,18 0 0 1 36,0 a18,18 0 0 1 36,0"/>
-  <path class="w" d="M636,212 L660,212"/>
-  <circle class="dot" cx="660" cy="212" r="5"/>
-  <text class="var" x="564" y="262" text-anchor="middle">L<tspan dy="6" font-size="65%">r</tspan></text>
+  <!-- ===== 节点到 Lr 的黑色横线（连续完整） ===== -->
+  <path class="w" d="M380,204 L496,204"/>
+
+  <!-- i_Lr 红色箭头叠加在黑线上方（上偏 4px） -->
+  <path class="arw" d="M404,200 L470,200" marker-end="url(#arr)"/>
+  <text class="red" x="408" y="180">i<tspan dy="6" font-size="65%">Lr</tspan></text>
+
+  <!-- ===== Lr 电感 ===== -->
+  <path class="w" d="M496,204 a18,18 0 0 1 36,0 a18,18 0 0 1 36,0 a18,18 0 0 1 36,0 a18,18 0 0 1 36,0"/>
+  <path class="w" d="M640,204 L664,204"/>
+  <circle class="dot" cx="664" cy="204" r="5"/>
+  <text class="var" x="568" y="252" text-anchor="middle">L<tspan dy="6" font-size="65%">r</tspan></text>
 
   <!-- ===== Lm 竖直电感 ===== -->
-  <path class="w" d="M660,212 a27.5,27.5 0 0 1 0,55 a27.5,27.5 0 0 1 0,55 a27.5,27.5 0 0 1 0,55 a27.5,27.5 0 0 1 0,55"/>
-  <circle class="dot" cx="660" cy="432" r="5"/>
-  <text class="var" x="614" y="334" text-anchor="end">L<tspan dy="6" font-size="65%">m</tspan></text>
+  <path class="w" d="M664,204 a27,27 0 0 1 0,54 a27,27 0 0 1 0,54 a27,27 0 0 1 0,54 a27,27 0 0 1 0,54"/>
+  <circle class="dot" cx="664" cy="420" r="5"/>
+  <text class="var" x="618" y="322" text-anchor="end">L<tspan dy="6" font-size="65%">m</tspan></text>
 
   <!-- ===== Coss3/n^2 + nVo 回路 ===== -->
-  <path class="w" d="M660,212 L712,212"/>
-  <path class="wc" d="M724,172 L724,252"/>
-  <path class="wc" d="M748,172 L748,252"/>
-  <path class="w" d="M748,212 L830,212"/>
-  <text class="var" x="736" y="148" text-anchor="middle">C<tspan dy="6" font-size="65%">oss3</tspan><tspan dy="-6">/n</tspan><tspan dy="-14" font-size="65%">2</tspan></text>
+  <path class="w" d="M664,204 L712,204"/>
+  <path class="wc" d="M724,170 L724,238"/>
+  <path class="wc" d="M748,170 L748,238"/>
+  <path class="w" d="M748,204 L830,204"/>
+  <text class="var" x="736" y="146" text-anchor="middle">C<tspan dy="6" font-size="65%">oss3</tspan><tspan dy="-6">/n</tspan><tspan dy="-14" font-size="65%">2</tspan></text>
 
   <!-- V_Q 标注（红色） -->
-  <text class="rs" x="698" y="272">+</text>
-  <text class="red" x="744" y="304" text-anchor="middle">V<tspan dy="6" font-size="65%">Q</tspan></text>
-  <text class="rs" x="768" y="272">&#8722;</text>
+  <text class="rs" x="698" y="270">+</text>
+  <text class="red" x="744" y="302" text-anchor="middle">V<tspan dy="6" font-size="65%">Q</tspan></text>
+  <text class="rs" x="770" y="270">&#8722;</text>
 
   <!-- nVo 电压源（上负下正） -->
-  <path class="w" d="M830,212 L830,270"/>
-  <circle class="wc" cx="830" cy="318" r="48"/>
-  <path class="w" d="M822,300 L838,300"/>
-  <path class="w" d="M822,338 L838,338 M830,330 L830,346"/>
-  <path class="w" d="M830,366 L830,432"/>
-  <text class="var" x="894" y="328">nV<tspan dy="6" font-size="65%">o</tspan></text>
+  <path class="w" d="M830,204 L830,262"/>
+  <circle class="wc" cx="830" cy="314" r="52"/>
+  <path class="w" d="M822,296 L838,296"/>
+  <path class="w" d="M822,334 L838,334 M830,326 L830,342"/>
+  <path class="w" d="M830,366 L830,420"/>
+  <text class="var" x="896" y="326">nV<tspan dy="6" font-size="65%">o</tspan></text>
 
-  <!-- ===== 底母线 + V_Cr 电压源（左负右正） ===== -->
-  <path class="w" d="M140,432 L420,432"/>
-  <circle class="wc" cx="470" cy="432" r="50"/>
-  <path class="w" d="M440,424 L440,440"/>
-  <path class="w" d="M492,424 L492,440 M484,432 L500,432"/>
-  <path class="w" d="M520,432 L810,432"/>
-  <text class="var" x="470" y="514" text-anchor="middle">V<tspan dy="6" font-size="65%">Cr</tspan></text>
+  <!-- ===== 底母线（连续完整）+ V_Cr 电压源（左负右正） ===== -->
+  <path class="w" d="M140,420 L422,420"/>
+  <circle class="wc" cx="472" cy="420" r="50"/>
+  <path class="w" d="M444,412 L444,428"/>
+  <path class="w" d="M498,412 L498,428 M490,420 L506,420"/>
+  <path class="w" d="M522,420 L830,420"/>
+  <text class="var" x="472" y="504" text-anchor="middle">V<tspan dy="6" font-size="65%">Cr</tspan></text>
 </svg>

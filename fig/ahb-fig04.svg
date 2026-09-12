@@ -137,27 +137,27 @@
   <circle class="dot" cx="290" cy="450" r="4"/>
 
   <!-- ============ 阶段2 电流路径高亮(红色虚线) ============ -->
-  <!-- 大回路: Vmid→Lr→谐振腔→Cr→底母线→左侧上行→顶母线→C_DS1 下行→Vmid -->
-  <path class="wr" d="M292,266 L302,290 Q304,294 310,294 L472,294 Q482,294 482,304 L482,401 Q482,411 472,411 L160,411 Q150,411 150,401 L150,72 Q150,62 160,62 L326,62 Q336,62 336,70 L336,88"/>
-  <polygon class="arr" points="206,405 206,417 188,411"/>
-  <!-- C_DS1 充电电流(向下) -->
-  <path class="wr" d="M336,88 L340,120 L340,236 Q340,248 332,251 L296,260"/>
-  <polygon class="arr" points="334,182 346,182 340,200"/>
-  <!-- C_DS2 放电电流(向上) -->
-  <path class="wr" d="M344,411 L344,340"/>
-  <polygon class="arr" points="338,352 350,352 344,334"/>
+  <!-- 大回路: 左竖贯通(顶∩到底边) → 底边向右(左端一个向左箭头) → 右竖上行(Lm左~50px) → 顶边向左开口于Vmid右侧 -->
+  <path class="wr" d="M250,286 Q250,278 262,278 L466,278 Q478,278 478,290 L478,400 Q478,412 466,412 L150,412 Q142,412 142,404 L142,56 Q142,48 150,48 L190,48 Q198,48 198,56 L198,66"/>
+  <polygon class="arr" points="170,405 170,419 152,412"/>
+  <!-- C_DS1 充电电流(向下, 独立段, 顶端在S1框上方) -->
+  <path class="wr" d="M345,140 L345,208"/>
+  <polygon class="arr" points="339,208 351,208 345,232"/>
+  <!-- C_DS2 放电电流(向上, 独立段, 底端接底边高度) -->
+  <path class="wr" d="M345,405 L345,322"/>
+  <polygon class="arr" points="339,322 351,322 345,300"/>
   <text class="varr" x="400" y="330">I<tspan dy="6" font-size="65%">lr</tspan></text>
   <!-- Ilm 励磁电流(向下) -->
   <path class="wr" d="M575,288 L575,386"/>
   <polygon class="arr" points="569,386 581,386 575,402"/>
-  <text class="varr" x="532" y="315">I<tspan dy="6" font-size="65%">lm</tspan></text>
+  <text class="varr" x="592" y="302">I<tspan dy="6" font-size="65%">lm</tspan></text>
   <!-- Vlm 极性: 上-下+ -->
   <text class="varr" x="520" y="242">−</text>
   <text class="varr" x="548" y="234">V<tspan dy="6" font-size="65%">lm</tspan></text>
   <text class="varr" x="520" y="486">+</text>
-  <!-- Io 输出回路 -->
-  <path class="wr" d="M968,304 Q960,304 960,312 L960,338 M960,364 L960,412 Q960,420 968,420 L1032,420 Q1040,420 1040,412 L1040,312 Q1040,304 1032,304 L976,304"/>
-  <polygon class="arr" points="954,364 966,364 960,346"/>
+  <!-- Io 输出回路: 负载左侧小环, 左边一个向上箭头 -->
+  <path class="wr" d="M973,292 Q965,292 965,300 L965,318 M965,346 L965,410 Q965,418 973,418 L1028,418 Q1036,418 1036,410 L1036,300 Q1036,292 1028,292 L973,292"/>
+  <polygon class="arr" points="959,346 971,346 965,320"/>
   <text class="varr" x="984" y="344">I<tspan dy="6" font-size="65%">O</tspan></text>
 
   <!-- 图题 -->
