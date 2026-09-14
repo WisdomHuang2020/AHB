@@ -5,3 +5,12 @@ dist-ssr
 .DS_Store
 *.log
 tsconfig.tsbuildinfo
+
+# 配图矢量化/高清化中间产物（脚本保留在库内，产物不入库）
+redlayer/
+vector-previews/
+AHB_6图_矢量化/
+AHB_6图_高清化/
+ahb-flyback-schematic-preview.png
+ahb-flyback-source.png
+research/.compiled/

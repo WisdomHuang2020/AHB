@@ -83,7 +83,7 @@ def base(cfg):
     f.append(vt(156, 146, "S", "1", cfg["s1"], 26))
     f.append(vt(312, 152, "C", "DS1", cfg["cds1"], 24))
     f.append(vt(156, 311, "S", "2", cfg["s2"], 26))
-    f.append(vt(312, 317, "C", "DS2", cfg["cds2"], 24))
+    f.append(vt(*cfg.get("cds2_xy", (312, 317)), "C", "DS2", cfg["cds2"], 24))
     # 母线中段/下段 + Vmid 节点
     f.append(p("M245,185 L245,295", BLACK, 2.2))
     f.append(p("M245,350 L245,455", BLACK, 2.2))
@@ -145,45 +145,36 @@ def base(cfg):
     return "\n  ".join(f)
 
 
-def loop_primary_fig06():
-    """fig06 Ilr 闭合矩形: 左竖贴S2框右缘(带向上箭头), 右竖在初级绕组左~48px。"""
-    f = []
-    f.append(p("M302,415 L302,348 M302,322 L302,303 Q302,295 310,295 L548,295 "
-               "Q560,295 560,307 L560,403 Q560,415 548,415 L302,415", RED, 2.2, dash="9 7"))
-    # 左竖向上箭头(S2 导通电流)
-    f.append(tri("294,348 310,348 302,322", RED))
-    return "\n  ".join(f)
+# ---------------- 原图红层叠加(虚线+箭头), 分片仿射(参数见 redlayer/figNN-pieces.json) ----------------
+import base64 as _b64
+import json as _json
 
 
-def loop_outer():
-    """经电源侧的外环: 顶边(左端向左箭头)+左竖下行+底端右钩向Vmid。"""
-    return "\n  ".join([
-        p("M112,30 L168,30 Q180,30 180,42 L180,226 Q180,238 192,238 L214,240",
-          RED, 2.2, dash="9 7"),
-        tri("118,23 118,37 102,30", RED)])
+def red_img(name):
+    root = os.path.dirname(os.path.abspath(__file__))
+    meta = _json.load(open(os.path.join(root, "redlayer", f"{name}-pieces.json")))
+    out = []
+    for pm in meta:
+        b64 = _b64.b64encode(
+            open(os.path.join(root, "redlayer", pm["file"]), "rb").read()).decode()
+        out.append(f'<image x="{pm["x"]:.1f}" y="{pm["y"]:.1f}" width="{pm["w"]:.1f}" '
+                   f'height="{pm["h"]:.1f}" preserveAspectRatio="none" '
+                   f'href="data:image/png;base64,{b64}"/>')
+    return "\n  ".join(out)
 
 
-def cds1_seg():
-    """fig07/08 CDS1 右侧竖虚线: 向上箭头(顶端)。"""
-    return "\n  ".join([
-        p("M296,92 L296,205", RED, 2.2, dash="9 7"),
-        tri("289,92 303,92 296,68", RED)])
+def ilm_label(direction):
+    """Ilm 矢量红字, down 在虚线右 / up 在虚线左。"""
+    return vt(660, 340, "I", "lm", RED, 24) if direction == "down" \
+        else vt(598, 340, "I", "lm", RED, 24)
 
 
-def loop_ilr_fig07():
-    """fig07 Ilr 回路: 顶边+右竖+底边(左端下钩)+CDS2右侧竖线(向下箭头)。"""
-    f = [p("M250,295 L548,295 Q560,295 560,307 L560,403 Q560,415 548,415 "
-           "L115,415 L115,428", RED, 2.2, dash="9 7")]
-    # CDS2 右侧竖虚线(连顶边到底边, 向下箭头)
-    f.append(p("M296,295 L296,368 M296,392 L296,415", RED, 2.2, dash="9 7"))
-    f.append(tri("289,368 303,368 296,392", RED))
-    return "\n  ".join(f)
+def id_label():
+    return vt(800, 395, "I", "d", RED, 26)
 
 
-def loop_ilr_fig08():
-    """fig08 Ilr 回路: 顶边+右竖+底边(左端下钩), 无中间竖线。"""
-    return p("M250,295 L548,295 Q560,295 560,307 L560,403 Q560,415 548,415 "
-             "L115,415 L115,428", RED, 2.2, dash="9 7")
+def io_label(pos):
+    return vt(*pos, "I", "O", RED, 26)
 
 
 def ilm_arrow(direction):
@@ -247,26 +238,23 @@ def build(name, cfg, extras):
 # ---------------- fig06:阶段4 能量传递,S2 导通 ----------------
 cfg06 = dict(vin=GREY, s1=GREY, s1box=GREY, s1dio=GREY, cds1=GREY,
              s2=BLACK, s2box=BLACK, s2dio=BLACK, cds2=GREY, d1=BLACK,
-             vmid_xy=(150, 270))
-extras06 = "\n  ".join([loop_primary_fig06(), ilm_arrow("down"), vlm("-"),
-                        loop_id(), loop_io((1000, 308, 1058, 415), 1000, (1004, 350)),
-                        ilr_label()])
+             vmid_xy=(150, 270), cds2_xy=(352, 374))
+extras06 = "\n  ".join([red_img("fig06"), ilm_label("down"), vlm("-"),
+                        id_label(), io_label((1004, 350)), ilr_label()])
 build("ahb-fig06.svg", cfg06, extras06)
 
 # ---------------- fig07:阶段5 S2 ZVS / Id->0 ----------------
 cfg07 = dict(vin=BLACK, s1=GREY, s1box=BLACK, s1dio=BLACK, cds1=BLACK,
              s2=GREY, s2box=BLACK, s2dio=BLACK, cds2=BLACK, d1=BLACK,
              vmid_xy=(150, 282))
-extras07 = "\n  ".join([loop_outer(), cds1_seg(), loop_ilr_fig07(), ilm_arrow("up"), vlm("-"),
-                        loop_id(), loop_io((1000, 308, 1058, 415), 1000, (1004, 350)),
-                        ilr_label()])
+extras07 = "\n  ".join([red_img("fig07"), ilm_label("up"), vlm("-"),
+                        id_label(), io_label((1004, 350)), ilr_label()])
 build("ahb-fig07.svg", cfg07, extras07)
 
 # ---------------- fig08:阶段6 S1 体二极管导通 ----------------
 cfg08 = dict(vin=BLACK, s1=GREY, s1box=GREY, s1dio=BLACK, cds1=GREY,
              s2=GREY, s2box=GREY, s2dio=GREY, cds2=GREY, d1=GREY,
              vmid_xy=(150, 282))
-extras08 = "\n  ".join([loop_outer(), cds1_seg(), loop_ilr_fig08(), ilm_arrow("up"), vlm("+"),
-                        loop_io((996, 300, 1060, 418), 996, (1012, 350)),
-                        ilr_label()])
+extras08 = "\n  ".join([red_img("fig08"), ilm_label("up"), vlm("+"),
+                        io_label((1012, 350)), ilr_label()])
 build("ahb-fig08.svg", cfg08, extras08)
