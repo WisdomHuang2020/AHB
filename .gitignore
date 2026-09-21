@@ -14,3 +14,7 @@ AHB_6图_高清化/
 ahb-flyback-schematic-preview.png
 ahb-flyback-source.png
 research/.compiled/
+
+# 工具/记忆目录，不入库
+.workbuddy/
+.vscode/
