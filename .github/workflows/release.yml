@@ -1,0 +1,74 @@
+name: Sync GitHub Releases
+
+# 为**每个 tag** 保证存在对应的 GitHub Release（缺则补建、已存在则跳过，幂等）。
+#
+# 背景：本仓库历史上从未创建过 Release（只有轻量 tag），而 GitHub **不会**因
+# 「推送 tag」自动生成 Release —— 必须显式经 API / 网页创建。
+# 本工作流使用 Actions 自带的 GITHUB_TOKEN（permissions: contents: write），
+# **不需要任何用户凭证**，也便于此后发版自动补齐。
+#
+# 触发：
+#   - push branches [main]：① 引导 —— 本文件首次合入 main 即触发一次全量补齐；
+#                          ② 自愈 —— 此后每次 main 推送都会补上缺失的 Release（无缺则空跑）。
+#   - push tags ['v*']：新版本打标签即自动生成 Release。
+#   - workflow_dispatch：需要时手工重跑。
+#
+# ⚠️ tag 推送触发读取的是「该 tag 指向提交」中的 workflow 文件；历史 tag 早于本文件，
+#    故**引导只能依赖 branches:[main]**（本项目约定 main 与 tag 一并推送，够用）。
+#
+# 备注：用 GITHUB_TOKEN 创建的 Release **不会**再触发其它 workflow（GitHub 的防递归设计），
+#       因此不会与 deploy.yml / deploy-lighthouse.yml 形成级联。
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "releases"
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history and tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create missing releases (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "仓库现有 tag（按版本升序）："
+          git tag --sort=v:refname
+          echo "-----------------------------------------"
+          created=0
+          for t in $(git tag --sort=v:refname); do
+            if gh release view "$t" >/dev/null 2>&1; then
+              echo "SKIP   $t  (Release 已存在)"
+            else
+              # --latest=false：不让历史 Release 抢占 "Latest" 徽标，循环结束后统一指定
+              gh release create "$t" --title "$t" --generate-notes --verify-tag --latest=false
+              echo "CREATE $t"
+              created=$((created + 1))
+            fi
+          done
+          echo "-----------------------------------------"
+          echo "本次新建 Release：$created 个"
+
+      - name: Keep the newest tag as 'Latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          NEWEST="$(git tag --sort=-v:refname | head -1)"
+          echo "最新 tag = $NEWEST"
+          gh release edit "$NEWEST" --latest \
+            || echo "::warning title=未能指定 Latest::标签 $NEWEST 目前没有 Release"
