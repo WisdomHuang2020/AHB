@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Fundamentals from './pages/Fundamentals'
@@ -12,7 +12,7 @@ import { DesignProvider } from './lib/DesignContext'
 function App() {
   return (
     <DesignProvider>
-      <HashRouter>
+      <BrowserRouter>
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -24,7 +24,7 @@ function App() {
             <Route path="/report" element={<Report />} />
           </Routes>
         </Layout>
-      </HashRouter>
+      </BrowserRouter>
     </DesignProvider>
   )
 }
