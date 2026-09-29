@@ -1,4 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!--
+    AHB 不对称半桥反激设计工具 —— favicon
+    语义取自本站真源图标 Zap（与主入口站 sites.json 的 icon、
+    本站页头/页脚 logo 一致），造型落到 AHB 最具辨识度的波形上：
+      不对称半桥的开关节点脉冲 —— 低电平宽、高电平窄,
+      占空比明显不等, 这正是 "Asymmetric" 三个字的图形化。
+    配色遵循站群统一规范: 深底 #0a0a0a / teal #14b8a6 主线 / amber #f59e0b 仅标关键点。
+    amber 不参与形体勾勒, 只落在脉冲顶(功率管导通的那段)。
+    16px 可读性: 低-高-低 三段, 中段明显窄于两侧, 轮廓为直角,
+      与 LLC 的谐振峰曲线、ipfc 的双波在标签页尺寸下即可区分。
+  -->
   <rect width="32" height="32" rx="6" fill="#0a0a0a"/>
-  <path d="M6 22 L12 10 L16 18 L20 8 L26 22" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M4 23 L10 23 L10 9 L15.5 9 L15.5 23 L28 23"
+        fill="none" stroke="#14b8a6" stroke-width="3"
+        stroke-linecap="square" stroke-linejoin="miter"/>
+  <circle cx="12.75" cy="9" r="1.9" fill="#f59e0b"/>
 </svg>
