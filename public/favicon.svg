@@ -1,18 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!--
     AHB 不对称半桥反激设计工具 —— favicon
-    语义取自本站真源图标 Zap（与主入口站 sites.json 的 icon、
-    本站页头/页脚 logo 一致），造型落到 AHB 最具辨识度的波形上：
-      不对称半桥的开关节点脉冲 —— 低电平宽、高电平窄,
-      占空比明显不等, 这正是 "Asymmetric" 三个字的图形化。
-    配色遵循站群统一规范: 深底 #0a0a0a / teal #14b8a6 主线 / amber #f59e0b 仅标关键点。
-    amber 不参与形体勾勒, 只落在脉冲顶(功率管导通的那段)。
-    16px 可读性: 低-高-低 三段, 中段明显窄于两侧, 轮廓为直角,
-      与 LLC 的谐振峰曲线、ipfc 的双波在标签页尺寸下即可区分。
+    造型：闪电（本站首页主图标 Zap 的加粗填实版），与页头 / 页脚 BrandMark 同一套 path。
+    语义取自本站真源图标 Zap（与主入口站 sites.json 的 icon 一致）。
+    配色遵循站群统一规范：深底 #0a0a0a / 主形 teal #14b8a6 / amber #f59e0b 仅标关键点。
+    16px 可读性：实心闪电、轮廓带尖角，与姊妹站的波浪 / 脉冲 / 灯泡 / 计算器 / 六边形均可区分。
   -->
-  <rect width="32" height="32" rx="6" fill="#0a0a0a"/>
-  <path d="M4 23 L10 23 L10 9 L15.5 9 L15.5 23 L28 23"
-        fill="none" stroke="#14b8a6" stroke-width="3"
-        stroke-linecap="square" stroke-linejoin="miter"/>
-  <circle cx="12.75" cy="9" r="1.9" fill="#f59e0b"/>
+  <rect width="32" height="32" rx="7" fill="#0a0a0a"/>
+  <path d="M18.2 3.2 L7.6 17.4 A1 1 0 0 0 8.4 19 H14.2 L12.4 28.6 A.6.6 0 0 0 13.5 29 L25 14.2 A1 1 0 0 0 24.1 12.6 H18 L20 3.7 A.6.6 0 0 0 18.2 3.2 Z"
+        fill="#14b8a6"/>
+  <circle cx="15.6" cy="15.6" r="1.7" fill="#f59e0b"/>
 </svg>
