@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "katex": "^0.16.21",
+    "katex": "^0.18.2",
     "lucide-react": "^0.487.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
