@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 
 # 兜底部署目标：GitHub Pages（https://wisdomhuang2020.github.io/AHB/）。
-# 与 deploy-lighthouse.yml（腾讯轻量云，正式域名 https://ahb.power-knowledge.tech/）
+# 与 deploy-lighthouse.yml（腾讯轻量云，正式域名 https://www.ahb.power-knowledge.tech/）
 # **并行独立**，两者互不阻塞、各自可达。
 #
 # 之所以保留这条兜底链路：正式域名的 TLS 握手对境外客户端存在间歇性中断
