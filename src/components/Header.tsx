@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen, Activity, Calculator, FileText, PenTool } from 'lucide-react'
+import { Menu, X, Zap, BookOpen, Activity, Calculator, FileText, PenTool, MessageSquare } from 'lucide-react'
 import BrandMark from './BrandMark'
 
 const navLinks = [
@@ -11,6 +11,8 @@ const navLinks = [
   { path: '/curves', label: '特性曲线', icon: Activity },
   { path: '/designer', label: '设计工具', icon: Calculator },
   { path: '/report', label: '报告输出', icon: FileText },
+  // 留言入口放在末位：读者发现问题时通常在读某一页，导航末位是「找话说」的自然位置。
+  { path: '/feedback', label: '留言', icon: MessageSquare },
 ]
 
 export default function Header() {
