@@ -19,6 +19,8 @@ import {
   CheckCircle2,
   Paperclip,
   Download,
+  Eye,
+  EyeOff,
 } from 'lucide-react'
 import {
   adminLogin,
@@ -47,6 +49,59 @@ const FILTERS: { key: Filter; label: string }[] = [
 ]
 
 const DEFAULT_USERNAME = 'power-admin'
+
+/**
+ * 带「显示密码」开关的密码框。
+ *
+ * 为什么要做：密码通常在手机上、或对着密码管理器粘贴时输入，看不见字符时
+ * 很难判断是"多打了一位"还是"输入法把字母吃掉了"，只能反复重输。
+ * 眼睛按钮让人当场核对，代价只是多一个按钮。
+ *
+ * 按钮 type="button" —— 否则它会成为表单的提交按钮之一，回车即提交空表单。
+ */
+function PasswordField({
+  id,
+  value,
+  onChange,
+  autoComplete,
+  minLength,
+  autoFocus = false,
+}: {
+  id: string
+  value: string
+  onChange: (v: string) => void
+  autoComplete?: string
+  minLength?: number
+  autoFocus?: boolean
+}) {
+  const [show, setShow] = useState(false)
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        type={show ? 'text' : 'password'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        /* pr-10 给右侧按钮让位；input-field 的 padding 在 components 层，
+           Tailwind 的 utility 层优先级更高，能盖住 */
+        className="input-field w-full pr-10"
+        autoComplete={autoComplete}
+        minLength={minLength}
+        required
+        autoFocus={autoFocus}
+      />
+      <button
+        type="button"
+        onClick={() => setShow((v) => !v)}
+        aria-label={show ? '隐藏密码' : '显示密码'}
+        title={show ? '隐藏密码' : '显示密码'}
+        className="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-text-muted transition-colors hover:text-text-primary"
+      >
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  )
+}
 
 function fmtSize(n: number): string {
   if (n < 1024) return `${n} B`
@@ -340,14 +395,11 @@ export default function Admin() {
                 <label htmlFor="adm-pass" className="block text-xs font-medium text-text-secondary mb-1.5">
                   密码
                 </label>
-                <input
+                <PasswordField
                   id="adm-pass"
-                  type="password"
                   value={inputPass}
-                  onChange={(e) => setInputPass(e.target.value)}
-                  className="input-field w-full"
+                  onChange={setInputPass}
                   autoComplete="current-password"
-                  required
                   autoFocus
                 />
               </div>
@@ -416,30 +468,24 @@ export default function Admin() {
                 <label htmlFor="set-pass" className="block text-xs font-medium text-text-secondary mb-1.5">
                   新密码 <span className="text-text-muted font-normal">（至少 10 位）</span>
                 </label>
-                <input
+                <PasswordField
                   id="set-pass"
-                  type="password"
                   value={setupPass}
-                  onChange={(e) => setSetupPass(e.target.value)}
-                  className="input-field w-full"
+                  onChange={setSetupPass}
                   autoComplete="new-password"
                   minLength={10}
-                  required
                 />
               </div>
               <div>
                 <label htmlFor="set-cfm" className="block text-xs font-medium text-text-secondary mb-1.5">
                   确认新密码
                 </label>
-                <input
+                <PasswordField
                   id="set-cfm"
-                  type="password"
                   value={setupConfirm}
-                  onChange={(e) => setSetupConfirm(e.target.value)}
-                  className="input-field w-full"
+                  onChange={setSetupConfirm}
                   autoComplete="new-password"
                   minLength={10}
-                  required
                 />
               </div>
 
@@ -705,44 +751,35 @@ export default function Admin() {
                   <label htmlFor="pw-cur" className="block text-xs font-medium text-text-secondary mb-1.5">
                     当前密码
                   </label>
-                  <input
+                  <PasswordField
                     id="pw-cur"
-                    type="password"
                     value={curPass}
-                    onChange={(e) => setCurPass(e.target.value)}
-                    className="input-field w-full"
+                    onChange={setCurPass}
                     autoComplete="current-password"
-                    required
                   />
                 </div>
                 <div>
                   <label htmlFor="pw-new" className="block text-xs font-medium text-text-secondary mb-1.5">
                     新密码 <span className="text-text-muted font-normal">（至少 10 位）</span>
                   </label>
-                  <input
+                  <PasswordField
                     id="pw-new"
-                    type="password"
                     value={newPass}
-                    onChange={(e) => setNewPass(e.target.value)}
-                    className="input-field w-full"
+                    onChange={setNewPass}
                     autoComplete="new-password"
                     minLength={10}
-                    required
                   />
                 </div>
                 <div>
                   <label htmlFor="pw-cfm" className="block text-xs font-medium text-text-secondary mb-1.5">
                     确认新密码
                   </label>
-                  <input
+                  <PasswordField
                     id="pw-cfm"
-                    type="password"
                     value={confirmPass}
-                    onChange={(e) => setConfirmPass(e.target.value)}
-                    className="input-field w-full"
+                    onChange={setConfirmPass}
                     autoComplete="new-password"
                     minLength={10}
-                    required
                   />
                 </div>
 
