@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ThemeSwitcher from './ThemeSwitcher'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Zap, BookOpen, Activity, Calculator, FileText, PenTool, MessageSquare } from 'lucide-react'
 import BrandMark from './BrandMark'
@@ -46,6 +47,7 @@ export default function Header() {
               </Link>
             )
           })}
+          <ThemeSwitcher />
         </nav>
 
         <button
