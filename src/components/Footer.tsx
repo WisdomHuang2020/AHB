@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Github, BookOpen, Activity, Calculator, House } from 'lucide-react'
+import { BookOpen, Activity, Calculator, House } from 'lucide-react'
 import BrandMark from './BrandMark'
 
 // 构建时由 vite.config.ts 的 define 注入（源为 package.json 的 version）。
@@ -98,14 +98,8 @@ export default function Footer() {
             >
               v{APP_VERSION}
             </span>
-            <a
-              href="https://github.com/WisdomHuang2020/AHB"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 text-text-muted hover:text-text-secondary text-sm transition-colors"
-            >
-              <Github className="w-4 h-4" /> GitHub
-            </a>
+            {/* 2026-11-10 站群统一口径：页面上的 GitHub 源码仓库链接与图标全部移除。
+                GitHub Pages 兜底通道仍保留，只是页面不再做外链。 */}
           </div>
         </div>
         {/* 免责声明：分「工程决策」与「知识产权」两段，与站群其余站点保持同一文本。 */}
