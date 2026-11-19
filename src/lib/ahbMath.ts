@@ -31,6 +31,10 @@ export interface AhbInputs {
   deadtime: number    // 控制器死区时间 (s)
   cPs: number         // 副边整流管结电容原边折算 C_ps（绕组寄生电容）(F)（审核修订 P2-16）
   turnsRatio?: number // 手动指定匝比；undefined 时按 dNom 自动计算
+  /** 手动指定参与谐振的漏感+串感 Lr (H)；undefined 时按 Lm 的 3% 估算（读者建议，2026-11-19） */
+  lrOverride?: number
+  /** 手动指定隔直/谐振电容 Cr (F)；undefined 时按 ZCS 调谐求解（读者建议，2026-11-19） */
+  crOverride?: number
 }
 
 export interface AhbOperatingPoint {
@@ -73,8 +77,11 @@ export interface AhbDesignResult {
   n: number             // 匝比 Np/Ns
   lm: number            // 励磁电感 (H)
   cb: number            // 隔直/谐振电容（ZCS 调谐值）(F)
-  lr: number            // 参与谐振的漏感+串感 (H)
-  fr: number            // Lr·Cr 谐振频率 (Hz)
+  lr: number            // 参与谐振的漏感+串感（实际采用值）(H)
+  lrAuto: number        // Lr 的自动估算值 0.03·Lm (H)
+  lrManual: boolean     // Lr 是否由用户手动指定（否则取 0.03·Lm）
+  cbManual: boolean     // Cr 是否由用户手动指定（否则为 ZCS 调谐解）
+  fr: number            // Lr·Cr 谐振频率（按**实际采用**的 Lr/Cr 计算）(Hz)
   zcs: ZcsSolution
   points: {
     min: AhbOperatingPoint    // V_in = vinMin
@@ -339,6 +346,10 @@ export function operatingPoint(inp: AhbInputs, n: number, lm: number, lr: number
   }
 }
 
+/** 手动覆盖值只接受有限正数；undefined / NaN / ≤0 一律回落到自动值 */
+const isPositive = (v: number | undefined): v is number =>
+  typeof v === 'number' && Number.isFinite(v) && v > 0
+
 /** 完整设计流程 */
 export function designAhb(inp: AhbInputs): AhbDesignResult {
   const n = inp.turnsRatio && inp.turnsRatio > 0
@@ -347,13 +358,21 @@ export function designAhb(inp: AhbInputs): AhbDesignResult {
 
   const lm = designLm(inp, n)
 
-  // 漏感+串感取 Lm 的 3%（典型值）
-  const lr = 0.03 * lm
+  // 漏感+串感：默认取 Lm 的 3%（典型值）；可用 lrOverride 指定实测值（漏感 + 外串电感）。
+  // 读者 2026-11-19 建议：真实 Lr 由变压器漏感与外串电感决定，可实测，不应锁死为 3%·Lm。
+  const lrAuto = 0.03 * lm
+  const lrManual = isPositive(inp.lrOverride)
+  const lr = lrManual ? (inp.lrOverride as number) : lrAuto
 
   // 隔直/谐振电容：文献八 ZCS 调谐（S2 关断时刻 i_Lr = I_Lm-min）
   const zcs = solveCrZcs(inp, n, lm, lr)
-  const cb = zcs.cb
-  const fr = zcs.fr
+  // 默认用 ZCS 调谐解；可用 crOverride 指定标准容值 / 实测电容
+  const cbManual = isPositive(inp.crOverride)
+  const cb = cbManual ? (inp.crOverride as number) : zcs.cb
+
+  // fr 必须按**实际采用**的 Lr·Cr 计算：Cr 被手动覆盖后，ZCS 解的 ω 不再成立。
+  // 未覆盖时直接沿用 zcs.fr，保证与改动前的结果逐位一致。
+  const fr = cbManual ? 1 / (2 * Math.PI * Math.sqrt(lr * cb)) : zcs.fr
 
   const points = {
     min: operatingPoint(inp, n, lm, lr, cb, inp.vinMin),
@@ -402,13 +421,23 @@ export function designAhb(inp: AhbInputs): AhbDesignResult {
   const nomResPri = Math.abs(points.nom.isEndRaw) / n
   if (nomResPri > 0.05) warnings.push(`额定点 ZCS 调谐残差偏大：副边残流折算原边 ${nomResPri.toFixed(3)} A（>0.05 A），谐振模型与调谐解不一致，请复核参数`)
   if (!zcs.converged) warnings.push('ZCS 调谐求解未收敛：当前参数组合下无法使 i_Lr 在 S2 关断时回到 I_Lm-min，请调整纹波系数 Kr 或频率')
-  // 审核修订 P2-16：Lr 低于文献八下限时告警
+  // 审核修订 P2-16：Lr 低于文献八下限时告警（手动覆盖 Lr 后此校核同样生效）
   if (lr < lrMin) warnings.push(`谐振电感 Lr=${(lr * 1e6).toFixed(1)} µH 低于文献八下限 ${(lrMin * 1e6).toFixed(1)} µH（由 T_d1min < T_ωr/2 导出），请增大 Lr 或复核 C_oss/C_ps`)
-  const ripplePct = (zcs.deltaVCr / points.nom.vCb) * 100
-  if (ripplePct > 20) warnings.push(`Cr 电压纹波 ${zcs.deltaVCr.toFixed(1)} V 占 V_Cr 的 ${ripplePct.toFixed(0)}%（>20%），注意 Cr 的耐压与 ESR 选型`)
+  // 手动覆盖 Cr：ZCS 由「自动满足」降级为「仅校核」，偏差 ≥5% 时显式告知
+  if (cbManual) {
+    const devPct = (cb / zcs.cb - 1) * 100
+    if (Math.abs(devPct) >= 5) {
+      warnings.push(`Cr 已手动设为 ${(cb * 1e9).toFixed(1)} nF，与 ZCS 调谐推荐值 ${(zcs.cb * 1e9).toFixed(1)} nF 相差 ${devPct > 0 ? '+' : ''}${devPct.toFixed(0)}%；ZCS 条件不再自动成立，请核对额定点副边残流`)
+    }
+  }
+  // ΔV_Cr ∝ 1/Cr：Cr 被手动覆盖时按实际容值换算（zcs.deltaVCr 对应的是推荐容值）。
+  // 未覆盖时 deltaVCrActual === zcs.deltaVCr，与改动前逐位一致。
+  const deltaVCrActual = cbManual ? zcs.deltaVCr * (zcs.cb / cb) : zcs.deltaVCr
+  const ripplePct = (deltaVCrActual / points.nom.vCb) * 100
+  if (ripplePct > 20) warnings.push(`Cr 电压纹波 ${deltaVCrActual.toFixed(1)} V 占 V_Cr 的 ${ripplePct.toFixed(0)}%（>20%），注意 Cr 的耐压与 ESR 选型`)
 
   return {
-    n, lm, cb, lr, fr, zcs,
+    n, lm, cb, lr, lrAuto, lrManual, cbManual, fr, zcs,
     points, iout, vDiode, vMos, lrMin, warnings,
   }
 }

@@ -95,8 +95,8 @@ export default function Report() {
             <tbody>
               <Row k="变压器匝比 n = Np/Ns" v={result.n.toFixed(2)} />
               <Row k="励磁电感 Lm" v={`${(result.lm * 1e6).toFixed(1)} µH`} />
-              <Row k="漏感+串感 Lr（≈3% Lm）" v={`${(result.lr * 1e6).toFixed(2)} µH`} />
-              <Row k="隔直/谐振电容 Cr（ZCS 调谐）" v={`${(result.cb * 1e9).toFixed(1)} nF`} />
+              <Row k={`漏感+串感 Lr${result.lrManual ? '（手动设定）' : '（≈3% Lm 估算）'}`} v={`${(result.lr * 1e6).toFixed(2)} µH`} />
+              <Row k={`隔直/谐振电容 Cr${result.cbManual ? '（手动设定）' : '（ZCS 调谐）'}`} v={`${(result.cb * 1e9).toFixed(1)} nF`} />
               <Row k="Lr·Cr 谐振频率 fr" v={`${(result.fr / 1000).toFixed(1)} kHz（fs = ${(inputs.fs / 1000).toFixed(0)} kHz，调谐比 fr/fs ≈ ${(result.fr / inputs.fs).toFixed(2)}）`} />
               <Row k="MOSFET 电压应力" v={`${result.vMos.toFixed(0)} V`} />
               <Row k="二极管电压应力" v={`${result.vDiode.toFixed(1)} V`} />

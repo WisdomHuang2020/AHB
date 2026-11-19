@@ -111,6 +111,7 @@ export default function Designer() {
       </h1>
       <p className="text-text-secondary mb-10">
         输入规格与设计目标，自动完成匝比、励磁电感的选型与隔直/谐振电容 Cr 的 ZCS 调谐，并在三个输入电压点验证 ZVS。
+        匝比、漏感 Lr 与谐振电容 Cr 均可手动覆盖，留空即自动。
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -145,6 +146,55 @@ export default function Designer() {
               />
             </label>
           </div>
+
+          {/* 读者留言建议（2026-11-19）：Lr / Cr 可手动指定，默认仍自动 */}
+          <div className="card-surface p-5">
+            <h2 className="font-semibold text-text-primary mb-1 text-sm uppercase tracking-wider">
+              谐振参数（可手动覆盖）
+            </h2>
+            <p className="text-text-muted text-xs mb-3 leading-relaxed">
+              两处留空即自动：Lr 取 Lm 的 3%，Cr 按 ZCS 调谐求解。填入实测漏感或选用标准容值后即以你填的为准，
+              ZCS 条件由「自动满足」降为「仅校核」。
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <label className="block">
+                <span className="text-text-secondary text-xs mb-1 block">漏感+串感 Lr（µH）</span>
+                <input
+                  type="number"
+                  className="input-field w-full"
+                  step={0.1}
+                  min={0}
+                  placeholder={`自动：${(result.lrAuto * 1e6).toFixed(1)}`}
+                  value={inputs.lrOverride !== undefined ? Number((inputs.lrOverride * 1e6).toFixed(3)) : ''}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value)
+                    setInputs((prev) => ({
+                      ...prev,
+                      lrOverride: Number.isFinite(v) && v > 0 ? v / 1e6 : undefined,
+                    }))
+                  }}
+                />
+              </label>
+              <label className="block">
+                <span className="text-text-secondary text-xs mb-1 block">谐振电容 Cr（nF）</span>
+                <input
+                  type="number"
+                  className="input-field w-full"
+                  step={1}
+                  min={0}
+                  placeholder={`ZCS 推荐：${(result.zcs.cb * 1e9).toFixed(1)}`}
+                  value={inputs.crOverride !== undefined ? Number((inputs.crOverride * 1e9).toFixed(3)) : ''}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value)
+                    setInputs((prev) => ({
+                      ...prev,
+                      crOverride: Number.isFinite(v) && v > 0 ? v / 1e9 : undefined,
+                    }))
+                  }}
+                />
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* 结果区 */}
@@ -162,7 +212,7 @@ export default function Designer() {
                 <div className="text-2xl font-bold text-primary-light font-mono">{(result.lm * 1e6).toFixed(0)} µH</div>
               </div>
               <div>
-                <div className="text-text-muted text-xs mb-1">隔直/谐振电容 Cr（ZCS 调谐）</div>
+                <div className="text-text-muted text-xs mb-1">{result.cbManual ? '隔直/谐振电容 Cr（手动设定）' : '隔直/谐振电容 Cr（ZCS 调谐）'}</div>
                 <div className="text-2xl font-bold text-primary-light font-mono">{(result.cb * 1e9).toFixed(0)} nF</div>
               </div>
               <div>
@@ -171,7 +221,7 @@ export default function Designer() {
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border/50 text-xs">
-              <div><span className="text-text-muted">漏感+串感 Lr ≈ </span><span className="font-mono text-text-primary">{(result.lr * 1e6).toFixed(1)} µH</span><span className="text-text-muted">（文献八下限 {(result.lrMin * 1e6).toFixed(1)} µH）</span></div>
+              <div><span className="text-text-muted">漏感+串感 Lr{result.lrManual ? '（手动）' : ' ≈ '}</span><span className="font-mono text-text-primary">{(result.lr * 1e6).toFixed(1)} µH</span><span className="text-text-muted">（文献八下限 {(result.lrMin * 1e6).toFixed(1)} µH）</span></div>
               <div><span className="text-text-muted">输出电流 </span><span className="font-mono text-text-primary">{result.iout.toFixed(2)} A</span></div>
               <div><span className="text-text-muted">MOSFET 应力 </span><span className="font-mono text-text-primary">{result.vMos.toFixed(0)} V</span></div>
               <div><span className="text-text-muted">二极管应力 </span><span className="font-mono text-text-primary">{result.vDiode.toFixed(1)} V</span></div>

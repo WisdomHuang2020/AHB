@@ -17,6 +17,8 @@ const defaultInputs: AhbInputs = {
   deadtime: 300e-9,
   cPs: 100e-12, // 审核修订 P2-16：副边整流管结电容原边折算（绕组寄生电容）
   turnsRatio: undefined,
+  lrOverride: undefined, // 留空 = 按 0.03·Lm 自动估算
+  crOverride: undefined, // 留空 = 按 ZCS 调谐求解
 }
 
 interface DesignContextValue {
